@@ -23,6 +23,7 @@ mongoose.connect('mongodb+srv://amark7:Amar_21288@clusternew.2n7ybay.mongodb.net
 // Import Models
 const User = require('./Models/User');
 const Product = require('./Models/Product');
+const ProductImage = require('./Models/Product');
 const Order = require('./Models/Order');
 const Comment = require('./Models/Comment');
 const Cart = require('./Models/Cart');

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../Models/Product'); // Product model
+const ProductImage = require('../Models/ProductImage');
 const Counter = require('../Models/Counter'); // Counter model
 
 router.get('/', async (req, res) => {
@@ -16,8 +17,15 @@ router.get('/', async (req, res) => {
             products = await Product.find();
         }
 
+        // If products were found, fetch the images for each product
         if (products.length > 0) {
-            res.json(products);
+            const productsWithImages = await Promise.all(products.map(async product => {
+                const images = await ProductImage.find({ product_id: product.product_id });
+                const image_url = images.map(image => image.image_url);
+                return { ...product._doc, image_url };
+            }));
+
+            res.json(productsWithImages);
         } else {
             res.json({ message: "No products found" });
         }
@@ -25,6 +33,7 @@ router.get('/', async (req, res) => {
         res.status(500).json({ message: `GET request failed: ${e.message}` });
     }
 });
+
 
 // POST request
 router.post('/', async (req, res) => {

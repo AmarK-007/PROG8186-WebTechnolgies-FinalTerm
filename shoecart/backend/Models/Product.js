@@ -1,11 +1,10 @@
+// models/product.js
 const mongoose = require('mongoose');
 
 const ProductSizeSchema = new mongoose.Schema({
   size_us: Number,
   quantity: Number
-});
-
-const ProductImageSchema = new mongoose.Schema([String]);
+}, { _id: false });
 
 const ProductSchema = new mongoose.Schema({
   product_id: {
@@ -16,7 +15,8 @@ const ProductSchema = new mongoose.Schema({
   title: String,
   description: String,
   price: Number,
-  image_url: [ProductImageSchema],
+  isDeleted: Number,
+  shippingCost: mongoose.Schema.Types.Decimal128,
   sizes: [ProductSizeSchema]
 });
 

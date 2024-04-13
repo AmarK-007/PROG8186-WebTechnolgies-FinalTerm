@@ -10,10 +10,20 @@ class HomePage extends React.Component {
         super(props);
         this.state = {
             cart: [], // Initialize cart state
-            total: 0 // Initialize total state
+            total: 0, // Initialize total state
+            products: [] // Initialize products state
         };
     }
 
+    componentDidMount() {
+        fetch('http://localhost:5000/products')
+            .then(response => response.json())
+            .then(data => {
+                console.log('API Response:', data); // Log the response data
+                this.setState({ products: data });
+            })
+            .catch(error => console.error('Error:', error));
+    }
     // Function to add a product to the cart
     addToCart = (product) => {
         const updatedCart = [...this.state.cart, product];
@@ -38,60 +48,7 @@ class HomePage extends React.Component {
     };
 
     render() {
-        // Hardcoded product data
-        const products = [
-            {
-                name: 'Air Tennis Shoe',
-                description: 'White Blue coloured Shoe for Men provides cushioning and support effect for the feet with Non Slip Sport Tennis, Gym, Walking Shoes Sneakers.',
-                price: 46.99,
-                images: [
-                    '/images/img-white-blue-1.jpg',
-                    '/images/img-white-blue-2.jpg',
-                    '/images/img-white-blue-3.jpg',
-                ]
-            },
-            {
-                name: 'Air Running Shoe',
-                description: 'Red coloured Shoe for Men extremely lightweight running shoes great for running, walking, fitness, jogging, outdoor sports, workout, and hiking.',
-                price: 56.99,
-
-                images: [
-                    '/images/img-red-1.jpg',
-                    '/images/img-red-2.jpg',
-                    '/images/img-red-3.jpg',
-                ]
-            },
-            {
-                name: 'Air Walking Shoe',
-                description: 'Yellow coloured Arch Support Designed shoes have good arch support with the memory foam insole and cloudfoam cushioning perfect for long walking.',
-                price: 44.99,
-                images: [
-                    '/images/img-yellow-1.jpg',
-                    '/images/img-yellow-2.jpg',
-                    '/images/img-yellow-3.jpg',
-                ]
-            },
-            {
-                name: 'Air Athletic Shoe',
-                description: 'Black coloured unisex shoe with double layered knitted fabric, which is lightweight, breathable and comfortable, keep your feet dry and cool.',
-                price: 55.99,
-                images: [
-                    '/images/img-blue-1.jpg',
-                    '/images/img-blue-2.jpg',
-                    '/images/img-blue-3.jpg',
-                ]
-            },
-            {
-                name: 'Air Casual Shoe',
-                description: 'Grey coloured unisex sneakers made from ultra light natural rubber material, flexible grooves, anti-skid and grip, adapts to any road condition',
-                price: 40.99,
-                images: [
-                    '/images/img-grey-1.jpg',
-                    '/images/img-grey-2.jpg',
-                    '/images/img-grey-3.jpg',
-                ]
-            }
-        ];
+        const { products } = this.state; // Use products from state
 
         return (
             <div className="App">
@@ -104,7 +61,7 @@ class HomePage extends React.Component {
                 </div>
                 <div className="products-container">
                     {products.map((product, index) => (
-                        <Product key={index} product={product} addToCart={this.props.addToCart} />
+                        <Product key={index} product={product} addToCart={this.addToCart} />
                     ))}
                 </div>
             </div>

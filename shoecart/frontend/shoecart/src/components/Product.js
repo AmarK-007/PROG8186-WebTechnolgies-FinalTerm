@@ -70,7 +70,7 @@ class Product extends Component {
             <div className="product">
                 <div className="product-images">
                     <Slider {...settings}>
-                        {images.map((image, index) => (
+                        {images && images.map((image, index) => (
                             <div key={index}>
                                 <img
                                     className="product-image"

@@ -53,7 +53,7 @@ class Product extends Component {
 
     render() {
         const { product } = this.props;
-        const { name, description, price, images } = product;
+        const { title, description, price, image_url, sizes } = product;
         const { quantity, size } = this.state;
 
         const settings = {
@@ -70,21 +70,26 @@ class Product extends Component {
             <div className="product">
                 <div className="product-images">
                     <Slider {...settings}>
-                        {images && images.map((image, index) => (
-                            <div key={index}>
-                                <img
-                                    className="product-image"
-                                    src={process.env.PUBLIC_URL + image}
-                                    alt={name}
-                                    style={{ width: '300px', height: '250px', objectFit: 'cover' }}
-                                />
-                            </div>
-                        ))}
+                        {image_url && image_url.map((image, index) => { // Corrected here
+                            console.log('Image prop:', image);
+                            console.log('With PUBLIC_URL:', process.env.PUBLIC_URL + image);
+
+                            return (
+                                <div key={index}>
+                                    <img
+                                        className="product-image"
+                                        src={process.env.PUBLIC_URL + image}
+                                        alt={title}
+                                        style={{ width: '300px', height: '250px', objectFit: 'cover' }}
+                                    />
+                                </div>
+                            );
+                        })}
                     </Slider>
                 </div>
                 <div className="product-details">
                     <br />
-                    <h3>{name}</h3>
+                    <h3>{title}</h3>
                     <p>{description}</p>
                     <p>Price: ${price}</p>
                     <div className="quantity-selector">
@@ -99,13 +104,9 @@ class Product extends Component {
                         <label htmlFor="size">Size (US):&nbsp;</label>
                         <select id="size" className="size-input" value={size} onChange={this.handleSizeChange}>
                             <option value="0">Select</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
+                            {sizes.map((size, index) => (
+                                <option key={index} value={size.size_us}>{size.size_us}</option>
+                            ))}
                         </select>
                     </div>
                     {this.state.warning !== '' ? (
@@ -121,3 +122,4 @@ class Product extends Component {
 }
 
 export default Product;
+

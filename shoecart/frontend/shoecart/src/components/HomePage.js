@@ -59,7 +59,7 @@ class HomePage extends React.Component {
                         <h4>Thanks to fans for their support, we will continue to update and optimize new styles to give everyone a better wearing experience.</h4>
                     </p>
                 </div>
-                <div className="products-container">
+                <div className="products-container scrollable-container flex-container">
                     {products.map((product, index) => (
                         <Product key={index} product={product} addToCart={this.addToCart} />
                     ))}

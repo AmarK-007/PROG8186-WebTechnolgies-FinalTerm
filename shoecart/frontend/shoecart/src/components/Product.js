@@ -46,11 +46,17 @@ class Product extends Component {
             return;
         }
 
-        const productToAdd = { ...product, quantity, size };
+        const productToAdd = { 
+            ...product, 
+            quantity, 
+            size,
+            user_id: localStorage.getItem('userId'), // Replace with the actual user ID
+            product_id: product.product_id // Replace with the actual product ID
+        };
         console.log('Adding product to cart:', productToAdd);
         addToCart(productToAdd);
         console.log(productToAdd.quantity, productToAdd.size, productToAdd.name, productToAdd.price);
-
+    
         // Clear the warning
         this.setState({ warning: '' });
     };

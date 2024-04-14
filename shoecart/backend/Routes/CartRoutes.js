@@ -22,12 +22,12 @@ router.get('/', async (req, res) => {
     }
 });
 
+// POST operation
 router.post('/', async (req, res) => {
-    console.log(req.body);
-    const { user_id, product_id, quantity } = req.body;
+    const { user_id, product_id, quantity, size } = req.body;
 
     // Check if all required fields are provided
-    if (!user_id || !product_id || !quantity) {
+    if (!user_id || !product_id || !quantity || !size) {
         return res.status(400).json({ message: 'Unable to create cart. Data is incomplete.' });
     }
 
@@ -42,7 +42,8 @@ router.post('/', async (req, res) => {
         cart_id: counter.seq,
         user_id,
         product_id,
-        quantity
+        quantity,
+        size
     });
 
     try {
@@ -53,16 +54,17 @@ router.post('/', async (req, res) => {
     }
 });
 
+// PUT operation
 router.put('/', async (req, res) => {
     try {
-        const { product_id, user_id, quantity, cart_id } = req.body;
+        const { product_id, user_id, quantity, cart_id, size } = req.body;
         if (!user_id && !cart_id) {
             return res.status(400).json({ message: "User ID or Cart ID is missing." });
         }
         const query = {};
         if (user_id) query.user_id = user_id;
         if (cart_id) query.cart_id = cart_id;
-        const updatedCart = await Cart.findOneAndUpdate(query, { product_id, user_id, quantity }, { new: true });
+        const updatedCart = await Cart.findOneAndUpdate(query, { product_id, user_id, quantity, size }, { new: true });
         if (!updatedCart) {
             return res.status(404).json({ message: "Cart item not found." });
         }

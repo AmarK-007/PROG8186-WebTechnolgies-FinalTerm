@@ -21,6 +21,7 @@ class HomePage extends React.Component {
             .then(data => {
                 console.log('API Response:', data); // Log the response data
                 this.setState({ products: data });
+                this.props.updateProducts(data); // Update the products in the App component
             })
             .catch(error => console.error('Error:', error));
     }
@@ -47,6 +48,7 @@ class HomePage extends React.Component {
                 user_id: userId, // Use the fetched user_id
                 product_id: product.product_id,
                 quantity: product.quantity,
+                size: product.size
             }),
         })
             .then(response => {

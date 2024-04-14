@@ -8,11 +8,14 @@ class CartPage extends React.Component {
 
     // Function to calculate the total bill
     calculateQuantity = (cart) => {
-        return cart.reduce((total, product) => total + product.quantity, 0);
+        return cart.reduce((total, item) => total + item.quantity, 0);
     };
     // Function to calculate the total bill
-    calculateTotal = (cart) => {
-        return cart.reduce((total, product) => total + product.price * product.quantity, 0);
+    calculateTotal = (cart, products) => {
+        return cart.reduce((total, item) => {
+            const product = products.find(product => product.product_id === item.product_id);
+            return total + (product ? product.price * item.quantity : 0);
+        }, 0);
     };
 
     // Function to calculate tax
@@ -22,8 +25,8 @@ class CartPage extends React.Component {
 
     render() {
         // Get the cart from the props
-        const { cart } = this.props;
-        const total = this.calculateTotal(cart);
+        const { cart, products } = this.props;
+        const total = this.calculateTotal(cart, products);
         const tax = this.calculateTax(total);
         const totalWithTax = total + tax;
         const quantity = this.calculateQuantity(cart);
@@ -33,13 +36,18 @@ class CartPage extends React.Component {
                 <h1>Shopping Cart</h1>
                 <div>
                     {/* Display selected products */}
-                    {cart.map((product, index) => (
-                        <div key={index} className="cart-item">
-                            <img src={process.env.PUBLIC_URL + product.images[0]} alt={product.name} style={{ width: '50px', height: '50px', objectFit: 'cover' }} />
-                            <span>{product.name} - ${product.price} x {product.quantity} = ${product.price * product.quantity}</span>
-                            <button onClick={() => this.props.removeFromCart(index)}>Remove</button>
-                        </div>
-                    ))}
+                    {cart.map((item, index) => {
+                        const product = products.find(product => product.product_id === item.product_id);
+                        return product && (
+                            <div key={index} className="cart-item">
+                                {product.image_url && product.image_url.length > 0 &&
+                                    <img src={process.env.PUBLIC_URL + product.image_url[0]} alt={product.name} style={{ width: '50px', height: '50px', objectFit: 'cover' }} />
+                                }
+                                <span>{product.title} - ${product.price} x {item.quantity} = ${product.price * item.quantity}</span>
+                                <button onClick={() => this.props.removeFromCart(index)}>Remove</button>
+                            </div>
+                        );
+                    })}
                 </div>
                 <div>
                     <h2>Total Quantity: {quantity}</h2>

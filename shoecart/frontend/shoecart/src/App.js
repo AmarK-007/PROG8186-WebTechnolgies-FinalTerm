@@ -12,10 +12,16 @@ import AccountPage from './components/AccountPage';
 // class component for the main app
 class App extends Component {
     state = {
-        cart: [], // Array to store selected products
+        cart: [],
+        products: [], // Array to store selected products
         total: 0, // Total bill
         showModal: false, // Whether to show the modal
-        showWarning: false
+        showWarning: false,
+    };
+
+
+    updateProducts = (products) => {
+        this.setState({ products });
     };
 
     fetchCart = () => {
@@ -43,23 +49,28 @@ class App extends Component {
 
     // Function to add a product to the cart
     addToCart = (product) => {
-        // Add product to cart in API
+        console.log('Sending product to server:', product);
+
         fetch('/api/cart', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(product),
         })
+            .then(response => {
+                console.log('Response from server:', response);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(() => {
-                // Fetch the updated cart
                 this.fetchCart();
             })
             .then(() => {
-                // Update local state and local storage
                 this.setState(prevState => {
                     const updatedCart = [...prevState.cart, product];
                     const total = this.calculateTotal(updatedCart);
 
-                    // Save updated cart data to local storage
                     localStorage.setItem('cart', JSON.stringify(updatedCart));
 
                     return { cart: updatedCart, total };
@@ -133,8 +144,8 @@ class App extends Component {
                 <div className="App">
                     <Header cart={cart} />
                     <Routes>
-                        <Route path="/" element={<HomePage addToCart={this.addToCart} cart={this.state.cart} total={this.state.total} />} />
-                        <Route path="/cart" element={<CartPage cart={this.state.cart} total={this.state.total} removeFromCart={this.removeFromCart} handleBuyNow={this.handleBuyNow} />} />
+                        <Route path="/" element={<HomePage addToCart={this.addToCart} updateProducts={this.updateProducts} cart={this.state.cart} total={this.state.total} />} />
+                        <Route path="/cart" element={<CartPage cart={this.state.cart} total={this.state.total} products={this.state.products} removeFromCart={this.removeFromCart} handleBuyNow={this.handleBuyNow} />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/logout" element={<Logout />} />
                         <Route path="/account" element={<AccountPage />} />

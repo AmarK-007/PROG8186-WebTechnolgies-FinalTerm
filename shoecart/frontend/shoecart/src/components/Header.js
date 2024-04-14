@@ -1,17 +1,18 @@
 import React from 'react';
 import UserAuthentication from './UserAuthentication';
+import CartContext from './CartContext';
 import { Link } from 'react-router-dom';
 
 // class component for header
 class Header extends React.Component {
-    
+    static contextType = CartContext;
     constructor(props) {
         super(props);
         this.state = { cart: props.cart };
     }
     // Function to calculate the total quantity of products in the cart
     calculateTotalQuantity = () => {
-        const { cart } = this.state;
+        const { cart } = this.props;
         if (cart && cart.length > 0) {
             return cart.reduce((total, product) => total + product.quantity, 0);
         } else {
@@ -22,6 +23,7 @@ class Header extends React.Component {
     componentDidUpdate(prevProps) {
         if (JSON.stringify(this.props.cart) !== JSON.stringify(prevProps.cart)) {
             this.setState({ cart: this.props.cart });
+            this.setState({ cart: this.context.cart });
         }
     }
 

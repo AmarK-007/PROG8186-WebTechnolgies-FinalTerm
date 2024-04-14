@@ -11,21 +11,25 @@ const Logout = () => {
     const logout = () => {
         // Call the logout API
         fetch('http://localhost:5000/users/logout')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Update login status to false
-                setLoggedIn(false);
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update login status to false
+                    setLoggedIn(false);
 
-                // Redirect to home page after logout
-                navigate('/'); // Redirect to the homepage
-            } else {
-                console.error('Logout failed:', data.message);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+                    // Remove isLoggedIn and userId from local storage
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('userId');
+
+                    // Redirect to home page after logout
+                    navigate('/'); // Redirect to the homepage
+                } else {
+                    console.error('Logout failed:', data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 
     // Call logout function when component mounts

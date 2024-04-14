@@ -31,7 +31,10 @@ class Product extends Component {
     // Function to handle adding product to cart
     handleAddToCart = () => {
         const { product, addToCart } = this.props;
-        const { quantity, size } = this.state;
+        const { size } = this.state;
+
+        let quantity = parseInt(this.state.quantity);
+        quantity = Math.max(1, Math.min(99, quantity)); 
 
         if (quantity === 0) {
             this.setState({ warning: 'Please select a quantity.' });
@@ -44,6 +47,7 @@ class Product extends Component {
         }
 
         const productToAdd = { ...product, quantity, size };
+        console.log('Adding product to cart:', productToAdd);
         addToCart(productToAdd);
         console.log(productToAdd.quantity, productToAdd.size, productToAdd.name, productToAdd.price);
 

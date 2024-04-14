@@ -5,9 +5,13 @@ import { Link } from 'react-router-dom';
 // class component for header
 class Header extends React.Component {
     
+    constructor(props) {
+        super(props);
+        this.state = { cart: props.cart };
+    }
     // Function to calculate the total quantity of products in the cart
     calculateTotalQuantity = () => {
-        const { cart } = this.props;
+        const { cart } = this.state;
         if (cart && cart.length > 0) {
             return cart.reduce((total, product) => total + product.quantity, 0);
         } else {
@@ -15,7 +19,15 @@ class Header extends React.Component {
         }
     };
 
+    componentDidUpdate(prevProps) {
+        if (JSON.stringify(this.props.cart) !== JSON.stringify(prevProps.cart)) {
+            this.setState({ cart: this.props.cart });
+        }
+    }
+
+
     render() {
+        console.log(this.props.cart);
         const totalQuantity = this.calculateTotalQuantity();
 
         return (

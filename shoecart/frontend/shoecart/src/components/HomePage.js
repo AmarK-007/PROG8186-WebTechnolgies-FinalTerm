@@ -24,14 +24,54 @@ class HomePage extends React.Component {
             })
             .catch(error => console.error('Error:', error));
     }
+    componentDidUpdate(prevProps, prevState) {
+        if (JSON.stringify(this.state.products) !== JSON.stringify(prevState.products)) {
+            this.forceUpdate();
+        }
+        if (JSON.stringify(this.state.cart) !== JSON.stringify(prevState.cart)) {
+            this.forceUpdate();
+        }
+    }
+
     // Function to add a product to the cart
     addToCart = (product) => {
-        const updatedCart = [...this.state.cart, product];
-        const total = this.calculateTotal(updatedCart);
-        this.setState({ cart: updatedCart, total });
-        console.log("Updated Cart:", updatedCart);
+        const userId = Number(localStorage.getItem('userId')); // Fetch the user_id from the local storage
+        console.log('userId:', userId); // Log the userId
+        // Make a POST request to the cart API
+        fetch('http://localhost:5000/carts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_id: userId, // Use the fetched user_id
+                product_id: product.product_id,
+                quantity: product.quantity,
+            }),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Cart API Response:', data);
 
-        console.log("Total:", total);
+                // Update the state only when the API request is successful
+                const updatedCart = [...this.state.cart, product];
+                const total = this.calculateTotal(updatedCart);
+                this.setState({ cart: updatedCart, total });
+
+                console.log("Updated Cart:", updatedCart);
+                console.log("Total:", total);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+
+                // Show a popup message when the API request fails
+                alert('Failed to add the product to the cart. Please try again.');
+            });
     };
 
     // Function to remove a product from the cart

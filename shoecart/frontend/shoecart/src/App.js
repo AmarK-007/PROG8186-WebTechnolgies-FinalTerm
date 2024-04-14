@@ -18,63 +18,67 @@ class App extends Component {
         showWarning: false
     };
 
-    // Function to check if user is logged in
+    fetchCart = () => {
+        // Get the user ID from local storage
+        const userId = localStorage.getItem('userId');
+
+        // Fetch the cart for the specific user
+        fetch(`http://localhost:5000/carts?user_id=${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                const total = this.calculateTotal(data);
+                this.setState({ cart: data, total }, () => {
+                    console.log("Cart state:", this.state.cart); // Log the updated state
+                });
+
+                // Save updated cart data to local storage
+                localStorage.setItem('cart', JSON.stringify(data));
+            })
+            .catch(error => console.error('Error:', error));
+    };
+
     componentDidMount() {
-        // Retrieve cart data from local storage
-        const storedCart = localStorage.getItem('cart');
-        if (storedCart) {
-            this.setState({ cart: JSON.parse(storedCart) });
-        }
-    
-        // Hardcoded default users
-        const hardcodedUsers = [
-            {
-                name: 'admin',
-                email: 'admin@shoecart.com',
-                address: '365 Albert St',
-                phone: '123-456-7890',
-                username: 'admin',
-                password: 'admin123'
-            },
-            {
-                name: 'user1',
-                email: 'user1@shoecart.com',
-                address: '350 Albert St',
-                phone: '987-654-3210',
-                username: 'user1',
-                password: 'user123'
-            }
-        ];
-    
-        // Retrieve users from local storage
-        const storedUsers = localStorage.getItem('users');
-    
-        // Only save hardcoded users to local storage if there are no users yet
-        if (!storedUsers) {
-            localStorage.setItem('users', JSON.stringify(hardcodedUsers));
-        }
+        this.fetchCart();
     }
 
     // Function to add a product to the cart
     addToCart = (product) => {
-        const { cart } = this.state;
-        const updatedCart = [...cart, product];
-        const total = this.calculateTotal(updatedCart);
-        this.setState({ cart: updatedCart, total });
+        // Add product to cart in API
+        fetch('/api/cart', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(product),
+        })
+            .then(() => {
+                // Fetch the updated cart
+                this.fetchCart();
+            })
+            .then(() => {
+                // Update local state and local storage
+                this.setState(prevState => {
+                    const updatedCart = [...prevState.cart, product];
+                    const total = this.calculateTotal(updatedCart);
 
-        // Save updated cart data to local storage
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
+                    // Save updated cart data to local storage
+                    localStorage.setItem('cart', JSON.stringify(updatedCart));
+
+                    return { cart: updatedCart, total };
+                });
+            })
+            .catch(error => console.error('Error:', error));
     };
 
     // Function to remove a product from the cart
     removeFromCart = (index) => {
-        const { cart } = this.state;
-        const updatedCart = [...cart.slice(0, index), ...cart.slice(index + 1)];
-        const total = this.calculateTotal(updatedCart);
-        this.setState({ cart: updatedCart, total });
+        this.setState(prevState => {
+            const updatedCart = [...prevState.cart.slice(0, index), ...prevState.cart.slice(index + 1)];
+            const total = this.calculateTotal(updatedCart);
 
-        // Save updated cart data to local storage
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
+            // Save updated cart data to local storage
+            localStorage.setItem('cart', JSON.stringify(updatedCart));
+
+            return { cart: updatedCart, total };
+        });
     };
 
     // Function to handle buy now action
@@ -95,7 +99,7 @@ class App extends Component {
 
                 // Clear the cart from local storage
                 localStorage.removeItem('cart');
-               
+
             } else {
                 // Redirect the user to the login page
                 window.location.href = '/login';
@@ -106,8 +110,8 @@ class App extends Component {
     // Function to close the modal
     handleCloseModal = () => {
         this.setState({ showModal: false });
-         // Redirect the user to the Home page
-                window.location.href = '/';
+        // Redirect the user to the Home page
+        window.location.href = '/';
     };
 
     // Function to close the warning

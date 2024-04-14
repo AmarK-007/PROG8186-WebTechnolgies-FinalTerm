@@ -23,6 +23,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+    console.log(req.body);
     const { user_id, product_id, quantity } = req.body;
 
     // Check if all required fields are provided

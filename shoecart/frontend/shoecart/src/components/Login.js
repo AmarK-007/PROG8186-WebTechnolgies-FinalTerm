@@ -61,6 +61,7 @@ const Login = () => {
                 if (data.status) {
                     setIsLoggedIn(true);
                     localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userId', data.user_id);
                     window.location.href = '/';
                 } else {
                     setLoginError(true);

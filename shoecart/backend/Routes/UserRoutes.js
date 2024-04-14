@@ -114,7 +114,7 @@ router.post('/login', async (req, res) => {
 
     req.session.loggedin = true; // Set the session
 
-    res.json({ status: true, message: 'Successfully Login!', user_id: user.id, username: user.username });
+    res.json({ status: true, message: 'Successfully Login!', user_id: user.user_id, username: user.username });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ status: false, message: 'Oops! Something went wrong. Please try again later.' });

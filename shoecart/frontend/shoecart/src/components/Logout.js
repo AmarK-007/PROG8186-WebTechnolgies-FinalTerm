@@ -24,10 +24,6 @@ const Logout = ({ clearCart }) => {
                     // Update login status to false
                     setLoggedIn(false);
                     onLogout(); // Call onLogout function from AuthContext
-                    // Remove isLoggedIn and userId from local storage
-                    localStorage.removeItem('isLoggedIn');
-                    localStorage.removeItem('userId');
-
 
                 } else {
                     console.error('Logout failed:', data.message);
@@ -37,6 +33,7 @@ const Logout = ({ clearCart }) => {
                 console.error('Error:', error);
             });
         const removeLocalStorageItems = new Promise((resolve) => {
+            // Remove isLoggedIn and userId from local storage
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userId');
             resolve();
@@ -45,6 +42,7 @@ const Logout = ({ clearCart }) => {
         Promise.all([logoutRequest, removeLocalStorageItems]).then(() => {
             // Redirect to home page after logout
             navigate('/login'); // Redirect to the login page
+            window.location.reload();
             //window.location.href = '/login';
         });
     }, [navigate, onLogout]); // Add navigate to the dependency array

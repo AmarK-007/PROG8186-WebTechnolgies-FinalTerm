@@ -33,6 +33,7 @@ class App extends Component {
             localStorage.setItem('isLoggedIn', 'false');
             localStorage.removeItem('userId');
             window.location.href = '/login';
+            window.location.reload();
         });
     };
 

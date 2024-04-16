@@ -1,8 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from './AuthContext';
 
-// class component for login
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -11,38 +10,13 @@ const Login = () => {
 
     const { onLogin } = useContext(AuthContext);
 
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     const hardcodedUsers = JSON.parse(localStorage.getItem('users')) || [];
-    //     const dynamicUsers = JSON.parse(localStorage.getItem('dynamicUsers')) || [];
-    //     const allUsers = [...hardcodedUsers, ...dynamicUsers];
+    useEffect(() => {
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (isLoggedIn === 'true') {
+            setIsLoggedIn(true);
+        }
+    }, []);
 
-    //     // Check if the entered username and password match any user in the user list
-    //     const user = allUsers.find(user => user.username === username && user.password === password);
-
-    //     // Log the hardcodedUsers and dynamicUsers arrays
-    //     /* console.log('Hardcoded users:', hardcodedUsers);
-    //     console.log('Dynamic users:', dynamicUsers); */
-
-    //     // Log the username and password variables, the user variable, and the result of the condition
-    //     /* console.log('Entered username:', username);
-    //     console.log('Entered password:', password);
-    //     console.log('Matched user:', user);
-    //     console.log('Condition result:', !!user); */
-
-    //     if (user) {
-    //         // Set isLoggedIn to true in state
-    //         setIsLoggedIn(true);
-
-    //         // Set isLoggedIn to true in local storage
-    //         localStorage.setItem('isLoggedIn', 'true');
-
-    //         // Redirect to homepage or any other protected route
-    //         window.location.href = '/'; // Change the URL as per your route setup
-    //     } else {
-    //         setLoginError(true);
-    //     }
-    // };
     const handleSubmit = (e) => {
         e.preventDefault();
 

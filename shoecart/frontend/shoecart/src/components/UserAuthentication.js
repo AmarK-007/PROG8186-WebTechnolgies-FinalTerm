@@ -29,6 +29,7 @@ const UserAuthentication = () => {
             // Clear the cart
             clearCart();
             navigate('/login');
+            window.location.reload();
         }
     };
 

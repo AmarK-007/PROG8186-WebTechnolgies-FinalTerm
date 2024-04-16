@@ -1,6 +1,10 @@
 import React from 'react';
 import Product from './Product';
+import Modal from 'react-modal';
+import Lottie from 'react-lottie';
+import animationData from '../animations/shoecart_addtocart.json';
 import '../App.css';
+
 
 // class component for home page
 class HomePage extends React.Component {
@@ -11,10 +15,20 @@ class HomePage extends React.Component {
         this.state = {
             cart: [], // Initialize cart state
             total: 0, // Initialize total state
-            products: [] // Initialize products state
+            products: [], // Initialize products state
+            isModalOpen: false // Initialize modal state
         };
     }
 
+    handleAddToCart = () => {
+        this.setState({ isModalOpen: true });
+    };
+
+    closeModal = () => {
+        this.setState({ isModalOpen: false });
+        this.props.fetchCart(); //fetches the cart
+        //window.location.reload(); //reloads the page
+    };
     componentDidMount() {
         fetch('http://localhost:5000/products')
             .then(response => response.json())
@@ -61,12 +75,13 @@ class HomePage extends React.Component {
                 console.log('Cart API Response:', data);
 
                 // Update the state only when the API request is successful
-                const updatedCart = [...this.state.cart, product];
+                const updatedProduct = { ...product, price: product.price, quantity: product.quantity };
+                const updatedCart = [...this.state.cart, updatedProduct];
                 const total = this.calculateTotal(updatedCart);
                 this.setState({ cart: updatedCart, total });
-
                 console.log("Updated Cart:", updatedCart);
                 console.log("Total:", total);
+                this.handleAddToCart();
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -86,12 +101,25 @@ class HomePage extends React.Component {
 
     // Function to calculate the total bill
     calculateTotal = (cart) => {
-        return cart.reduce((total, product) => total + product.price * product.quantity, 0);
+        return cart.reduce((total, product) => {
+            if (product && product.price && !isNaN(product.price) && product.quantity && !isNaN(product.quantity)) {
+                return total + product.price * product.quantity;
+            } else {
+                return total;
+            }
+        }, 0);
     };
 
     render() {
         const { products } = this.state; // Use products from state
-
+        const defaultOptions = {
+            loop: true,
+            autoplay: true,
+            animationData: animationData,
+            rendererSettings: {
+                preserveAspectRatio: 'xMidYMid slice'
+            }
+        };
         return (
             <div className="App">
                 <div className="webpage-content">
@@ -106,6 +134,19 @@ class HomePage extends React.Component {
                         <Product key={index} product={product} addToCart={this.addToCart} />
                     ))}
                 </div>
+
+                <Modal
+                    isOpen={this.state.isModalOpen}
+                    onRequestClose={this.closeModal}
+                    overlayClassName="modal-animation-overlay"
+                    className="modal-animation-content"
+                >
+                    <h2>Add to Cart</h2>
+                    <div className="lottie-container">
+                        <Lottie options={defaultOptions} height={'100%'} width={'100%'} />
+                    </div>
+                    <button onClick={this.closeModal}>Close</button>
+                </Modal>
             </div>
         );
     }

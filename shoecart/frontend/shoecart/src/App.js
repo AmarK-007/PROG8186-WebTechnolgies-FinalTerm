@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal as BootstrapModal, Button } from 'react-bootstrap';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './components/HomePage';
@@ -17,9 +17,8 @@ class App extends Component {
         products: [], // Array to store selected products
         total: 0, // Total bill
         showModal: false, // Whether to show the modal
-        showWarning: false,
+        showWarning: false, // Whether to show the warning
     };
-
 
     updateProducts = (products) => {
         this.setState({ products });
@@ -69,7 +68,8 @@ class App extends Component {
             })
             .then(() => {
                 this.setState(prevState => {
-                    const updatedCart = [...prevState.cart, product];
+                    const updatedProduct = { ...product, price: product.price, quantity: product.quantity };
+                    const updatedCart = [...prevState.cart, updatedProduct];
                     const total = this.calculateTotal(updatedCart);
 
                     localStorage.setItem('cart', JSON.stringify(updatedCart));
@@ -133,7 +133,13 @@ class App extends Component {
 
     // Function to calculate the total bill
     calculateTotal = (cart) => {
-        return cart.reduce((total, product) => total + product.price, 0);
+        return cart.reduce((total, product) => {
+            if (product && product.price && !isNaN(product.price) && product.quantity && !isNaN(product.quantity)) {
+                return total + product.price * product.quantity;
+            } else {
+                return total;
+            }
+        }, 0);
     };
 
     clearCart = () => {
@@ -148,9 +154,9 @@ class App extends Component {
             <CartContext.Provider value={{ cart: this.state.cart, clearCart: this.clearCart }}>
                 <Router>
                     <div className="App">
-                        <Header cart={cart} />
+                        <Header products={this.state.products} cart={cart} />
                         <Routes>
-                            <Route path="/" element={<HomePage addToCart={this.addToCart} updateProducts={this.updateProducts} cart={this.state.cart} total={this.state.total} />} />
+                            <Route path="/" element={<HomePage addToCart={this.addToCart} updateProducts={this.updateProducts} cart={this.state.cart} total={this.state.total} fetchCart={this.fetchCart} />} />
                             <Route path="/cart" element={<CartPage cart={this.state.cart} total={this.state.total} products={this.state.products} removeFromCart={this.removeFromCart} handleBuyNow={this.handleBuyNow} />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/logout" element={<Logout clearCart={this.clearCart} />} />
@@ -168,23 +174,23 @@ class App extends Component {
                             </p>
                         )}
 
-                        <Modal show={showModal} onHide={this.handleCloseModal}>
-                            <Modal.Header>
-                                <Modal.Title><h2>Order Placed Successfully!</h2></Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
+                        <BootstrapModal show={showModal} onHide={this.handleCloseModal}>
+                            <BootstrapModal.Header>
+                                <BootstrapModal.Title><h2>Order Placed Successfully!</h2></BootstrapModal.Title>
+                            </BootstrapModal.Header>
+                            <BootstrapModal.Body>
                                 <br />
                                 Thank you for your Cash-on delivery mode purchase! Your order has been successfully placed.
                                 We will send you a confirmation email shortly with details about your order.
                                 <br />
                                 <br />
-                            </Modal.Body>
-                            <Modal.Footer>
+                            </BootstrapModal.Body>
+                            <BootstrapModal.Footer>
                                 <Button variant="secondary" onClick={this.handleCloseModal}>
                                     Continue Shopping
                                 </Button>
-                            </Modal.Footer>
-                        </Modal>
+                            </BootstrapModal.Footer>
+                        </BootstrapModal>
                     </div>
                 </Router>
             </CartContext.Provider>

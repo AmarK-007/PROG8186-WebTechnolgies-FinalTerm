@@ -593,6 +593,50 @@ span.product-price {
   color: #35343a;
 }
 
+
+.modal-animation-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);  /* Semi-transparent black background */
+}
+
+.modal-animation-content {
+  position: relative;
+  width: 25%;
+  height: 25%;
+  background: linear-gradient(45deg, #a08667, #455ea1, #9c78bd, #a08667);
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+  border: 1px solid #888;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 4px;
+  outline: none;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.lottie-container {
+  width: 200px;
+  height: 200px;
+}
+
+@keyframes gradientAnimation {
+  0% {background-position: 0% 50%;}
+  50% {background-position: 100% 50%;}
+  100% {background-position: 0% 50%;}
+}
+
 select {
   margin-bottom: 10px;
   padding: 5px;
@@ -672,7 +716,7 @@ body::before {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  max-width: 1600px; 
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -721,8 +765,10 @@ body::before {
 .scrollable-container {
   height: 70vh;
   overflow-y: auto;
-  scrollbar-width: thin; /* For Firefox */
-  scrollbar-color: rgba(155, 155, 155, 0.7) transparent; /* For Firefox */
+  scrollbar-width: thin;
+  /* For Firefox */
+  scrollbar-color: rgba(155, 155, 155, 0.7) transparent;
+  /* For Firefox */
 }
 
 /* For Chrome, Safari, and Opera */
@@ -755,10 +801,18 @@ body::before {
 }
 
 .flex-container>div {
-  
+
   /* This will make each product take up at least 20% of the row width, allowing for 5 items per row at most */
   margin: 1%;
   /* Optional: add some margin around each product */
+}
+
+.center-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');

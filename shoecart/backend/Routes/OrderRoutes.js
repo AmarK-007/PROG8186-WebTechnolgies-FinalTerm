@@ -5,11 +5,13 @@ const Counter = require('../Models/Counter'); // Counter model
 
 router.get('/', async (req, res) => {
     try {
-        const { order_id, limit } = req.query;
+        const { order_id, limit, user_id } = req.query;
         let orders;
         if (order_id) {
             orders = await Order.find({ order_id: order_id });
-        } else if (limit) {
+        } if(user_id){
+            orders = await Order.find({ user_id: user_id });
+        }else if (limit) {
             orders = await Order.find().limit(parseInt(limit));
         } else {
             orders = await Order.find();

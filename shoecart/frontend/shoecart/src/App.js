@@ -5,10 +5,12 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './components/HomePage';
 import CartPage from './components/CartPage';
+import MyOrders from './components/MyOrders';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import AccountPage from './components/AccountPage';
 import CartContext from './components/CartContext';
+import AuthContext from './components/AuthContext';
 
 // class component for the main app
 class App extends Component {
@@ -18,6 +20,20 @@ class App extends Component {
         total: 0, // Total bill
         showModal: false, // Whether to show the modal
         showWarning: false, // Whether to show the warning
+        isLoggedIn: false,
+    };
+
+    handleLogin = () => {
+        this.setState({ isLoggedIn: true });
+        localStorage.setItem('isLoggedIn', 'true');
+    };
+
+    handleLogout = () => {
+        this.setState({ isLoggedIn: false }, () => {
+            localStorage.setItem('isLoggedIn', 'false');
+            localStorage.removeItem('userId');
+            window.location.href = '/login';
+        });
     };
 
     updateProducts = (products) => {
@@ -45,6 +61,8 @@ class App extends Component {
 
     componentDidMount() {
         this.fetchCart();
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        this.setState({ isLoggedIn });
     }
 
     // Function to add a product to the cart
@@ -151,49 +169,58 @@ class App extends Component {
         const { cart, showModal, showWarning } = this.state;
 
         return (
-            <CartContext.Provider value={{ cart: this.state.cart, clearCart: this.clearCart }}>
-                <Router>
-                    <div className="App">
-                        <Header products={this.state.products} cart={cart} />
-                        <Routes>
-                            <Route path="/" element={<HomePage addToCart={this.addToCart} updateProducts={this.updateProducts} cart={this.state.cart} total={this.state.total} fetchCart={this.fetchCart} />} />
-                            <Route path="/cart" element={<CartPage cart={this.state.cart} total={this.state.total} products={this.state.products} removeFromCart={this.removeFromCart} handleBuyNow={this.handleBuyNow} />} />
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/logout" element={<Logout clearCart={this.clearCart} />} />
-                            <Route path="/account" element={<AccountPage />} />
-                        </Routes>
-                        <Footer />
+            <AuthContext.Provider
+                value={{
+                    isLoggedIn: this.state.isLoggedIn,
+                    onLogin: this.handleLogin,
+                    onLogout: this.handleLogout,
+                }}
+            >
+                <CartContext.Provider value={{ cart: this.state.cart, clearCart: this.clearCart }}>
+                    <Router>
+                        <div className="App">
+                            <Header products={this.state.products} cart={cart} />
+                            <Routes>
+                                <Route path="/" element={<HomePage addToCart={this.addToCart} updateProducts={this.updateProducts} cart={this.state.cart} total={this.state.total} fetchCart={this.fetchCart} />} />
+                                <Route path="/cart" element={<CartPage cart={this.state.cart} total={this.state.total} products={this.state.products} removeFromCart={this.removeFromCart} handleBuyNow={this.handleBuyNow} />} />
+                                <Route path="/myorders" element={<MyOrders />} />
+                                <Route path="/login" element={<Login />} />
+                                <Route path="/logout" element={<Logout clearCart={this.clearCart} />} />
+                                <Route path="/account" element={<AccountPage />} />
+                            </Routes>
+                            <Footer />
 
-                        {showWarning && (
-                            <p className="warning">
-                                Your cart is empty.
-                                <br />
-                                Please add some products before checking out.
-                                <br />
-                                <button onClick={this.handleCloseWarning}>Close</button>
-                            </p>
-                        )}
+                            {showWarning && (
+                                <p className="warning">
+                                    Your cart is empty.
+                                    <br />
+                                    Please add some products before checking out.
+                                    <br />
+                                    <button onClick={this.handleCloseWarning}>Close</button>
+                                </p>
+                            )}
 
-                        <BootstrapModal show={showModal} onHide={this.handleCloseModal}>
-                            <BootstrapModal.Header>
-                                <BootstrapModal.Title><h2>Order Placed Successfully!</h2></BootstrapModal.Title>
-                            </BootstrapModal.Header>
-                            <BootstrapModal.Body>
-                                <br />
-                                Thank you for your Cash-on delivery mode purchase! Your order has been successfully placed.
-                                We will send you a confirmation email shortly with details about your order.
-                                <br />
-                                <br />
-                            </BootstrapModal.Body>
-                            <BootstrapModal.Footer>
-                                <Button variant="secondary" onClick={this.handleCloseModal}>
-                                    Continue Shopping
-                                </Button>
-                            </BootstrapModal.Footer>
-                        </BootstrapModal>
-                    </div>
-                </Router>
-            </CartContext.Provider>
+                            <BootstrapModal show={showModal} onHide={this.handleCloseModal}>
+                                <BootstrapModal.Header>
+                                    <BootstrapModal.Title><h2>Order Placed Successfully!</h2></BootstrapModal.Title>
+                                </BootstrapModal.Header>
+                                <BootstrapModal.Body>
+                                    <br />
+                                    Thank you for your Cash-on delivery mode purchase! Your order has been successfully placed.
+                                    We will send you a confirmation email shortly with details about your order.
+                                    <br />
+                                    <br />
+                                </BootstrapModal.Body>
+                                <BootstrapModal.Footer>
+                                    <Button variant="secondary" onClick={this.handleCloseModal}>
+                                        Continue Shopping
+                                    </Button>
+                                </BootstrapModal.Footer>
+                            </BootstrapModal>
+                        </div>
+                    </Router>
+                </CartContext.Provider>
+            </AuthContext.Provider>
         );
     }
 }

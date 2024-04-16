@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import AuthContext from './AuthContext';
 
 // class component for login
 const Login = () => {
@@ -7,6 +8,8 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [loginError, setLoginError] = useState(false);
+
+    const { onLogin } = useContext(AuthContext);
 
     // const handleSubmit = (e) => {
     //     e.preventDefault();
@@ -62,6 +65,7 @@ const Login = () => {
                     setIsLoggedIn(true);
                     localStorage.setItem('isLoggedIn', 'true');
                     localStorage.setItem('userId', data.user_id);
+                    onLogin(); // Call onLogin function from AuthContext
                     window.location.href = '/';
                 } else {
                     setLoginError(true);
@@ -84,24 +88,29 @@ const Login = () => {
     };
 
     return (
-        <div className="container mt-5">
-            <div className="col-md-6 offset-md-3">
-                <div className="card">
-                    <div className="card-body">
-                        <h2 className="card-title text-center mb-4">Login</h2>
-                        {loginError && <p className="text-danger">Invalid username or password</p>}
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-3">
-                                <label htmlFor="username" className="form-label">Username</label>
-                                <input type="text" name="username" id="username" className="form-control" value={username} onChange={handleChange} placeholder="Enter your username" required />
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="password" className="form-label">Password</label>
-                                <input type="password" name="password" id="password" className="form-control" value={password} onChange={handleChange} placeholder="Enter your password" required />
-                            </div>
-                            <button type="submit" className="btn btn-primary">Login</button>
-                        </form>
-                        <p className="mt-3">Don't have an account? <Link to="/account">Create Account</Link></p>
+        <div className="container-fluid mt-5 container-form-Login-logout">
+            <div className="row">
+                <div className="col-md-6 offset-md-3">
+                    <div className="card">
+                        <div className="card-body">
+                            <h2 className="card-title text-center mb-4" style={{ color: 'white' }}>Login</h2>
+                            <hr className="white-line" />
+                            <br />
+                            {loginError && <p className="text-danger" style={{ color: 'red' }}>Invalid username or password</p>}
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label htmlFor="username" className="form-label" style={{ color: 'white' }}>Username</label>
+                                    <input type="text" name="username" id="username" className="form-control" value={username} onChange={handleChange} placeholder="Enter your username" required />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="password" className="form-label" style={{ color: 'white' }}>Password</label>
+                                    <input type="password" name="password" id="password" className="form-control" value={password} onChange={handleChange} placeholder="Enter your password" required />
+                                </div>
+                                <br />
+                                <button type="submit" className="btn btn-primary">Login</button>
+                            </form>
+                            <p className="mt-3" style={{ color: 'blue' }}>Don't have an account? <Link to="/account">Create Account</Link></p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import CartContext from './CartContext';
 import { useNavigate } from 'react-router-dom';
-
+import AuthContext from './AuthContext';
 // functional component for user authentication
 const UserAuthentication = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -13,10 +13,11 @@ const UserAuthentication = () => {
         // Simulate authentication status check
         const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
         setIsLoggedIn(loggedIn);
-    }, []);
+    }, [setIsLoggedIn]);
 
     // Function to handle logout
     const handleLogout = () => {
+        document.title = "ShoeCart"; // title of the page
         const confirmed = window.confirm('Are you sure you want to logout?');
         if (confirmed) {
             // Handle logout
@@ -31,14 +32,20 @@ const UserAuthentication = () => {
         }
     };
 
+    const handleLogin = () => {
+        setIsLoggedIn(true);
+    };
+
     return (
-        <div>
-            {isLoggedIn ? (
-                <button onClick={handleLogout}>Logout</button>
-            ) : (
-                <a href="/login">Login</a>
-            )}
-        </div>
+        <AuthContext.Provider value={{ isLoggedIn, onLogin: handleLogin, onLogout: handleLogout }}>
+            <div>
+                {isLoggedIn ? (
+                    <button onClick={handleLogout}>Logout</button>
+                ) : (
+                    <a href="/login">Login</a>
+                )}
+            </div>
+        </AuthContext.Provider>
     );
 }
 

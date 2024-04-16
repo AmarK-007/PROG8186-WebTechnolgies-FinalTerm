@@ -91,17 +91,18 @@
 }
 
 .btn-primary {
-  background-color: #35343a;
+  background-color: #f2f2f2;
   border: none;
   border-radius: 5px;
   padding: 12px 20px;
   font-size: 18px;
+  color: #000;
   font-weight: bold;
 }
 
 .btn-primary:hover {
-  background-color: #f2f2f2;
-  color: #35343a;
+  background-color: #35343a;
+  color: #f2f2f2;
 }
 
 header {
@@ -593,6 +594,23 @@ span.product-price {
   color: #35343a;
 }
 
+.container-form-Login-logout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin-top: 10dp;
+  margin: 0;
+}
+
+.card {
+  margin: auto;
+  width: 500px;
+  /* Adjust as needed */
+  max-width: 90%;
+  /* Prevents the form from going off-screen on small devices */
+  background-color: rgba(0, 0, 0, 0.2);
+}
 
 .modal-animation-overlay {
   display: flex;
@@ -604,7 +622,8 @@ span.product-price {
   width: 100%;
   height: 100%;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.5);  /* Semi-transparent black background */
+  background: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent black background */
 }
 
 .modal-animation-content {
@@ -632,9 +651,17 @@ span.product-price {
 }
 
 @keyframes gradientAnimation {
-  0% {background-position: 0% 50%;}
-  50% {background-position: 100% 50%;}
-  100% {background-position: 0% 50%;}
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 select {

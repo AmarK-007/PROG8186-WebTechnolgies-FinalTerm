@@ -1,7 +1,7 @@
 import React from "react";
-
-// class component for CartPage
+import CartContext from './CartContext';
 class CartPage extends React.Component {
+static contextType = CartContext;
     constructor(props) {
         super(props);
     }
@@ -33,7 +33,17 @@ class CartPage extends React.Component {
 
         return (
             <div className="cart-card-layout">
-                <h1>Shopping Cart</h1>
+            <h1>Shopping Cart</h1>
+            <div>
+                {cart.length > 1 &&
+                    <button onClick={() => {
+                        if (window.confirm('Are you sure? This will clear all the cart items.')) {
+                            this.context.clearCartAPICall(null, true);
+                        }
+                    }}>Remove All</button>
+                }
+            </div>
+            <br/>
                 <div>
                     {/* Display selected products */}
                     {cart.map((item, index) => {
@@ -44,7 +54,7 @@ class CartPage extends React.Component {
                                     <img src={process.env.PUBLIC_URL + product.image_url[0]} alt={product.name} style={{ width: '50px', height: '50px', objectFit: 'cover' }} />
                                 }
                                 <span>{product.title} - ${product.price} x {item.quantity} = ${product.price * item.quantity}</span>
-                                <button onClick={() => this.props.removeFromCart(index)}>Remove</button>
+                                <button onClick={() => this.context.clearCartAPICall(item.cart_id , false)/*this.props.removeFromCart(index)*/}>Remove</button>
                             </div>
                         );
                     })}

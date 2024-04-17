@@ -5,7 +5,7 @@ import AuthContext from './AuthContext';
 // functional component for user authentication
 const UserAuthentication = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const { clearCart } = useContext(CartContext);
+    const { clearCartLocallyOnLogout } = useContext(CartContext);
     const navigate = useNavigate();
 
     // Function to check if user is logged in
@@ -27,7 +27,7 @@ const UserAuthentication = () => {
             localStorage.removeItem('userId');// Clear the userId from local storage
             localStorage.removeItem('users');// Clear the users from local storage
             // Clear the cart
-            clearCart();
+            clearCartLocallyOnLogout();
             navigate('/login');
             window.location.reload();
         }

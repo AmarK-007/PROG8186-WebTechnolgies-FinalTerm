@@ -83,11 +83,21 @@ router.delete('/', async (req, res) => {
         const query = {};
         if (user_id) query.user_id = user_id;
         if (cart_id) query.cart_id = cart_id;
-        const deletedCart = await Cart.findOneAndDelete(query);
-        if (!deletedCart) {
-            return res.status(404).json({ message: "Cart item not found." });
+
+        let result;
+        if (user_id) {
+            result = await Cart.deleteMany(query);
+            if (result.deletedCount === 0) {
+                return res.status(404).json({ message: "No cart items found for this user." });
+            }
+        } else if (cart_id) {
+            result = await Cart.findOneAndDelete(query);
+            if (!result) {
+                return res.status(404).json({ message: "Cart item not found." });
+            }
         }
-        res.json({ message: "Cart item deleted." });
+
+        res.json({ message: "Cart item(s) deleted." });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

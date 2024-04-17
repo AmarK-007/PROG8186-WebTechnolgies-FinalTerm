@@ -4,11 +4,11 @@ import AuthContext from './AuthContext';
 import '../App.css';
 
 // class component for logout
-const Logout = ({ clearCart }) => {
+const Logout = ({ clearCartLocallyOnLogout }) => {
     useEffect(() => {
         // Clear the cart when the component is mounted
-        clearCart();
-    }, [clearCart]);
+        clearCartLocallyOnLogout();
+    }, [clearCartLocallyOnLogout]);
 
     const navigate = useNavigate(); // Use useNavigate hook
     const [loggedIn, setLoggedIn] = useState(true); // State to track login status

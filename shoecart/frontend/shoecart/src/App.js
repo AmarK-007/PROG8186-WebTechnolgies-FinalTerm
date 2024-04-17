@@ -98,6 +98,58 @@ class App extends Component {
             })
             .catch(error => console.error('Error:', error));
     };
+    
+    // Function to clear the cart
+    clearCartAPICall = (cartId, isClearAll) => {
+        // Get the user ID from local storage
+        const userId = localStorage.getItem('userId');
+    
+        // Determine the API endpoint based on isClearAll
+        const endpoint = isClearAll ? `http://localhost:5000/carts?user_id=${userId}` : `http://localhost:5000/carts?cart_id=${cartId}`;
+    
+        fetch(endpoint, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Delete API Response:', data);
+    
+            // Update the state only when the API request is successful
+            if (isClearAll) {
+                this.setState({ cart: [], total: 0 }, () => {
+                    // Clear the cart from local storage
+                    localStorage.removeItem('cart');
+    
+                    // Show a success message
+                    alert('All items cleared from cart successfully!');
+                });
+            } else {
+                this.setState(prevState => {
+                    const updatedCart = prevState.cart.filter(item => item.cart_id !== cartId);
+                    const total = this.calculateTotal(updatedCart);
+    
+                    // Update the cart in local storage
+                    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    
+                    // Show a success message
+                    alert('Item removed from cart successfully!');
+    
+                    return { cart: updatedCart, total };
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+    
+            // Show a popup message when the API request fails
+            alert('Failed to clear the cart. Please try again.');
+        });
+    };
 
     // Function to remove a product from the cart
     removeFromCart = (index) => {
@@ -161,7 +213,7 @@ class App extends Component {
         }, 0);
     };
 
-    clearCart = () => {
+    clearCartLocallyOnLogout = () => {
         this.setState({ cart: [], total: 0 });
         localStorage.removeItem('cart');
     };
@@ -177,7 +229,7 @@ class App extends Component {
                     onLogout: this.handleLogout,
                 }}
             >
-                <CartContext.Provider value={{ cart: this.state.cart, clearCart: this.clearCart }}>
+                <CartContext.Provider value={{ cart: this.state.cart, clearCartAPICall: this.clearCartAPICall }}>
                     <Router>
                         <div className="App">
                             <Header products={this.state.products} cart={cart} />
@@ -186,7 +238,7 @@ class App extends Component {
                                 <Route path="/cart" element={<CartPage cart={this.state.cart} total={this.state.total} products={this.state.products} removeFromCart={this.removeFromCart} handleBuyNow={this.handleBuyNow} />} />
                                 <Route path="/myorders" element={<MyOrders />} />
                                 <Route path="/login" element={<Login />} />
-                                <Route path="/logout" element={<Logout clearCart={this.clearCart} />} />
+                                <Route path="/logout" element={<Logout clearCartLocallyOnLogout={this.clearCartLocallyOnLogout} />} />
                                 <Route path="/account" element={<AccountPage />} />
                             </Routes>
                             <Footer />

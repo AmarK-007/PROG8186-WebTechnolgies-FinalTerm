@@ -16,7 +16,9 @@ class HomePage extends React.Component {
             cart: [], // Initialize cart state
             total: 0, // Initialize total state
             products: [], // Initialize products state
-            isModalOpen: false // Initialize modal state
+            isModalOpen: false, // Initialize modal state
+
+            serverError: false // Initialize serverError state
         };
     }
 
@@ -37,7 +39,10 @@ class HomePage extends React.Component {
                 this.setState({ products: data });
                 this.props.updateProducts(data); // Update the products in the App component
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                this.setState({ serverError: true }); // Set serverError to true if there's an error
+            });
     }
     componentDidUpdate(prevProps, prevState) {
         if (JSON.stringify(this.state.products) !== JSON.stringify(prevState.products)) {
@@ -111,7 +116,7 @@ class HomePage extends React.Component {
     };
 
     render() {
-        const { products } = this.state; // Use products from state
+        const { products, serverError } = this.state; // Use products from state
         const defaultOptions = {
             loop: true,
             autoplay: true,
@@ -122,31 +127,38 @@ class HomePage extends React.Component {
         };
         return (
             <div className="App">
-                <div className="webpage-content">
-                    <h1><i>Welcome to Our Store!</i></h1>
-                    <h3>AIR specializes in air-cushioned fashion sneakers. Because it is professional, it is excellent.</h3>
-                    <p>At present, our products include men’s air-cushion shoes, women’s air-cushion shoes, children’s air-cushion shoes,men's casual shoes, men's memory foam walking shoes and other series.
-                        <h4>Thanks to fans for their support, we will continue to update and optimize new styles to give everyone a better wearing experience.</h4>
-                    </p>
-                </div>
-                <div className="products-container scrollable-container flex-container">
-                    {products.map((product, index) => (
-                        <Product key={index} product={product} addToCart={this.addToCart} />
-                    ))}
-                </div>
+                {serverError ? (
+                    <div className="error-message">Something broke. Please visit later.</div>
+                ) : (
+                    <>
+                        <div className="webpage-content">
+                            <h1><i>Welcome to Our Store!</i></h1>
+                            <h3>AIR specializes in air-cushioned fashion sneakers. Because it is professional, it is excellent.</h3>
+                            <p>At present, our products include men’s air-cushion shoes, women’s air-cushion shoes, children’s air-cushion shoes,men's casual shoes, men's memory foam walking shoes and other series.
+                                <h4>Thanks to fans for their support, we will continue to update and optimize new styles to give everyone a better wearing experience.</h4>
+                            </p>
+                        </div>
+                        <div className="products-container scrollable-container flex-container">
+                            {products.map((product, index) => (
+                                <Product key={index} product={product} addToCart={this.addToCart} />
+                            ))}
+                        </div>
 
-                <Modal
-                    isOpen={this.state.isModalOpen}
-                    onRequestClose={this.closeModal}
-                    overlayClassName="modal-animation-overlay"
-                    className="modal-animation-content"
-                >
-                    <h2>Add to Cart</h2>
-                    <div className="lottie-container">
-                        <Lottie options={defaultOptions} height={'100%'} width={'100%'} />
-                    </div>
-                    <button onClick={this.closeModal}>Close</button>
-                </Modal>
+                        <Modal
+                            isOpen={this.state.isModalOpen}
+                            onRequestClose={this.closeModal}
+                            overlayClassName="modal-animation-overlay"
+                            className="modal-animation-content"
+                        >
+                            <h2>Add to Cart</h2>
+                            <div className="lottie-container">
+                                <Lottie options={defaultOptions} height={'100%'} width={'100%'} />
+                            </div>
+                            <button onClick={this.closeModal}>Close</button>
+                        </Modal>
+
+                    </>
+                )}
             </div>
         );
     }

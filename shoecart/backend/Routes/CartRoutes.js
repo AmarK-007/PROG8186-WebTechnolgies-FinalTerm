@@ -90,11 +90,15 @@ router.delete('/', async (req, res) => {
             if (result.deletedCount === 0) {
                 return res.status(404).json({ message: "No cart items found for this user." });
             }
+            // Decrement cart counter by the number of deleted items
+            await Counter.findOneAndUpdate({ _id: 'cart_id' }, { $inc: { seq: -result.deletedCount } });
         } else if (cart_id) {
             result = await Cart.findOneAndDelete(query);
             if (!result) {
                 return res.status(404).json({ message: "Cart item not found." });
             }
+             // Decrement cart counter by 1
+             await Counter.findOneAndUpdate({ _id: 'cart_id' }, { $inc: { seq: -1 } });
         }
 
         res.json({ message: "Cart item(s) deleted." });

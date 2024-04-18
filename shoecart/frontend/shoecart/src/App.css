@@ -257,7 +257,8 @@ h5 {
   transform: translate(1%, 1%);
 }
 
-.cart-card-layout {
+.cart-card-layout,
+.order-card-layout {
   width: 30%;
   margin: 0 auto;
   padding: 20px;
@@ -612,6 +613,20 @@ span.product-price {
   50% { opacity: 0; }
 }
 
+.fancy-line { 
+  border: 0; 
+  height: 2px;
+  margin: 0.5em 0;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px 0 rgba(15, 12, 199, 0.637);
+}
+
+.order-detail-card {
+  border: 1px solid #ccc;
+  margin: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+}
 .card {
   margin: auto;
   width: 500px;

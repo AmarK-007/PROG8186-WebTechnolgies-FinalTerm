@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Product = require('../Models/Product'); // Product model
 const ProductImage = require('../Models/ProductImage');
@@ -40,13 +41,16 @@ router.get('/', async (req, res) => {
 
 // POST request
 router.post('/', async (req, res) => {
-    const { title, price, description, shipping_cost, is_deleted, sizes } = req.body;
-    let { image_url } = req.body;
-    // Check for required fields
-    if (!title || !price || !description || !shipping_cost || !image_url || !sizes) {
-        return res.status(400).json({ message: 'Missing required field' });
-    }
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
+        const { title, price, description, shipping_cost, is_deleted, sizes } = req.body;
+        let { image_url } = req.body;
+        // Check for required fields
+        if (!title || !price || !description || !shipping_cost || !image_url || !sizes) {
+            return res.status(400).json({ message: 'Missing required field' });
+        }
+
         // Get the next product_id
         const counter = await Counter.findOneAndUpdate({ _id: 'product_id' }, { $inc: { seq: 1 } }, { new: true, upsert: true });
         const product_id = counter.seq;
@@ -66,24 +70,31 @@ router.post('/', async (req, res) => {
             await productSize.save();
         }
 
+        await session.commitTransaction();
         res.json({ message: "Product created", product: savedProduct });
     } catch (e) {
+        await session.abortTransaction();
         res.status(500).json({ message: `POST request failed: ${e.message}` });
+    } finally {
+        session.endSession();
     }
 });
 
 // PUT request
 router.put('/', async (req, res) => {
-    const { title, price, description, sizes } = req.body;
-    const { product_id } = req.query;
-    let { image_url } = req.body;
-
-    // Check for required fields
-    if (!title || !price || !description || !image_url || !sizes || !product_id) {
-        return res.status(400).json({ message: 'Missing required field' });
-    }
-    image_url = [image_url];
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
+        const { title, price, description, sizes } = req.body;
+        const { product_id } = req.query;
+        let { image_url } = req.body;
+
+        // Check for required fields
+        if (!title || !price || !description || !image_url || !sizes || !product_id) {
+            return res.status(400).json({ message: 'Missing required field' });
+        }
+        image_url = [image_url];
+
         const updatedProduct = await Product.findOneAndUpdate({ product_id: product_id }, { title, price, description, is_deleted: 0 }, { new: true });
         if (updatedProduct) {
             // Update images
@@ -99,37 +110,51 @@ router.put('/', async (req, res) => {
                 const productSize = new ProductSize({ product_id, ...size });
                 await productSize.save();
             }
-
+            await session.commitTransaction();
             res.json({ message: "Product updated", product: updatedProduct });
         } else {
+            await session.abortTransaction();
             res.status(404).json({ message: "Product not found." });
         }
     } catch (e) {
+        await session.abortTransaction();
         res.status(500).json({ message: `PUT request failed: ${e.message}` });
+    } finally {
+        session.endSession();
     }
 });
 
 // DELETE request
 router.delete('/', async (req, res) => {
-    const { product_id } = req.query;
-
-    if (!product_id) {
-        return res.status(400).json({ message: 'Missing required field' });
-    }
-
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
+        const { product_id } = req.query;
+
+        if (!product_id) {
+            return res.status(400).json({ message: 'Missing required field' });
+        }
+
+
         const deletedProduct = await Product.findOneAndUpdate({ product_id: product_id }, { is_deleted: 1 }, { new: true });
         if (deletedProduct) {
             // Mark images and sizes as deleted
             await ProductImage.updateMany({ product_id: product_id }, { is_deleted: 1 });
             await ProductSize.updateMany({ product_id: product_id }, { is_deleted: 1 });
 
+            // Decrement product counter
+            await Counter.findOneAndUpdate({ _id: 'product_id' }, { $inc: { seq: -1 } });
+            await session.commitTransaction();
             res.json({ message: "Product marked as deleted", product: deletedProduct });
         } else {
+            await session.abortTransaction();
             res.status(404).json({ message: "Product not found." });
         }
     } catch (e) {
+        await session.abortTransaction();
         res.status(500).json({ message: `DELETE request failed: ${e.message}` });
+    } finally {
+        session.endSession();
     }
 });
 

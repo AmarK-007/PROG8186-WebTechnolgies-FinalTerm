@@ -91,6 +91,7 @@ router.delete('/', async (req, res) => {
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     await User.deleteOne({ _id: user._id });
+    await Counter.findOneAndUpdate({ _id: 'user_id' }, { $inc: { seq: -1 } });
     res.json({ message: 'User deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });

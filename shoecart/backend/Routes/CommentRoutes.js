@@ -104,6 +104,8 @@ router.delete('/', async (req, res) => {
         if (result.deletedCount === 0) {
             return res.status(404).json({ message: 'Comment not found.' });
         }
+        // Decrement cart counter by 1
+        await Counter.findOneAndUpdate({ _id: 'comment_id' }, { $inc: { seq: -result.deletedCount } });
         res.json({ message: 'Comments deleted', deletedCount: result.deletedCount });
     } catch (err) {
         res.status(500).json({ message: err.message });

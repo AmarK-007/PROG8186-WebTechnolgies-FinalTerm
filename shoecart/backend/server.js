@@ -26,6 +26,7 @@ const Product = require('./Models/Product');
 const ProductImage = require('./Models/ProductImage');
 const ProductSize = require('./Models/ProductSize');
 const Order = require('./Models/Order');
+const OrderDetail = require('./Models/OrderDetail');
 const Comment = require('./Models/Comment');
 const Cart = require('./Models/Cart');
 

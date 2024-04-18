@@ -2,7 +2,9 @@ import React from 'react';
 import Product from './Product';
 import Modal from 'react-modal';
 import Lottie from 'react-lottie';
+import Slider from 'react-input-slider';
 import animationData from '../animations/shoecart_addtocart.json';
+import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin, FaArrowUp, FaGooglePay, FaCcVisa, FaCcMastercard, FaMoneyBillWave } from 'react-icons/fa'; // Import Font Awesome icons
 import '../App.css';
 
 
@@ -18,12 +20,17 @@ class HomePage extends React.Component {
             products: [], // Initialize products state
             isModalOpen: false, // Initialize modal state
 
-            serverError: false // Initialize serverError state
+            serverError: false, // Initialize serverError state
+            feedback: 0,
         };
     }
 
     handleAddToCart = () => {
         this.setState({ isModalOpen: true });
+    };
+
+    handleFeedbackChange = (pos) => {
+        this.setState({ feedback: pos.x });
     };
 
     closeModal = () => {
@@ -134,11 +141,9 @@ class HomePage extends React.Component {
                         <div className="webpage-content">
                             <h1><i>Welcome to Our Store!</i></h1>
                             <h3>AIR specializes in air-cushioned fashion sneakers. Because it is professional, it is excellent.</h3>
-                            <p>At present, our products include men’s air-cushion shoes, women’s air-cushion shoes, children’s air-cushion shoes,men's casual shoes, men's memory foam walking shoes and other series.
-                                <h4>Thanks to fans for their support, we will continue to update and optimize new styles to give everyone a better wearing experience.</h4>
-                            </p>
                         </div>
-                        <div className="products-container scrollable-container flex-container">
+                        <h2>Best Sellers</h2>
+                        <div className="products-container  flex-container">{/* scrollable-container */}
                             {products.map((product, index) => (
                                 <Product key={index} product={product} addToCart={this.addToCart} />
                             ))}
@@ -148,15 +153,85 @@ class HomePage extends React.Component {
                             isOpen={this.state.isModalOpen}
                             onRequestClose={this.closeModal}
                             overlayClassName="modal-animation-overlay"
-                            className="modal-animation-content"
+                            className="modal-animation-content scrollable-container"
                         >
+                            <button
+                                    onClick={this.closeModal}
+                                    className="close-button"
+                                    img="/images/close.jpg"
+                                />
                             <h2>Add to Cart</h2>
                             <div className="lottie-container">
                                 <Lottie options={defaultOptions} height={'100%'} width={'100%'} />
                             </div>
-                            <button onClick={this.closeModal}>Close</button>
+                            {/* <button onClick={this.closeModal}>Close</button> */}
                         </Modal>
+                        <br />
+                        <br />
+                        <div style={{ width: '100%', backgroundColor: '#666363' }}>
+                            <br />
+                            <div className="webpage-content">
+                                <p>At present, our products include men’s air-cushion shoes, women’s air-cushion shoes, children’s air-cushion shoes,men's casual shoes, men's memory foam walking shoes and other series.
+                                    <h4>Thanks to fans for their support, we will continue to update and optimize new styles to give everyone a better wearing experience.</h4>
+                                </p>
+                            </div>
+                            <br />
+                        </div>
+                        <br />
+                        <br />
+                        <div className="info-row">
+                            <div className="about-us">
+                                <h2>About Us</h2>
+                                <p>We are a team of passionate individuals who believe in the power of comfort and style. Our mission is to provide high-quality, air-cushioned shoes that don't compromise on style.</p>
+                            </div>
 
+                            <div className="testimonials">
+                                <h2>What Our Customers Say</h2>
+                                <p>"These are the most comfortable shoes I've ever worn!" - Rajinikanth</p>
+                                <p>"I love the style and the comfort. Highly recommend!" - Johnny Depp</p>
+                            </div>
+
+                            <div className="contact-us customer-service">
+                                <h2>Customer Service</h2>
+                                <p>Call us at +1 226-898-4990 or email us at service@shoecart.com</p>
+                                <p><a href="/myorders">Order Status</a></p>
+                            </div>
+
+                            <div className="social-media">
+                                <h2>Follow Us</h2>
+                                <div className="social-icons">
+                                    <a href="https://www.facebook.com" target="_blank" rel="noreferrer"><FaFacebook className="icon" size={30} color="white" /></a>
+                                    <a href="https://www.instagram.com" target="_blank" rel="noreferrer"><FaInstagram className="icon" size={30} color="white" /></a>
+                                    <a href="https://www.twitter.com" target="_blank" rel="noreferrer"><FaTwitter className="icon" size={30} color="white" /></a>
+                                    <a href="https://www.linkedin.com" target="_blank" rel="noreferrer"><FaLinkedin className="icon" size={30} color="white" /></a>
+                                </div>
+                                <br />
+                                <div className="payment-methods">
+                                    <h2>We Accept</h2>
+                                    <div className="payment-icons">
+                                        <FaCcVisa className="icon" size={30} color="white" />
+                                        <FaCcMastercard className="icon" size={30} color="white" />
+                                        <FaMoneyBillWave className="icon" size={30} color="white" />
+                                        <FaGooglePay className="icon" size={30} color="white" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button className="back-to-top" style={{ width: '-webkit-fill-available' }} onClick={() => window.scrollTo(0, 0)}> <FaArrowUp /> Back to Top </button>
+
+                        <div className="feedback-slider">
+                            <h2>Give Us Your Feedback</h2>
+                            <Slider
+                                axis="x"
+                                xstep={1}
+                                xmin={1}
+                                xmax={10}
+                                x={this.state.feedback}
+                                onChange={this.handleFeedbackChange}
+                            />
+                            <p>Your feedback: {this.state.feedback}</p>
+                        </div>
                     </>
                 )}
             </div>

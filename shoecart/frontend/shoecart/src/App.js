@@ -11,6 +11,10 @@ import Logout from './components/Logout';
 import AccountPage from './components/AccountPage';
 import CartContext from './components/CartContext';
 import AuthContext from './components/AuthContext';
+import ProductDetail from './components/ProductDetail'; // Import the ProductDetail component
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root');
 
 // class component for the main app
 class App extends Component {
@@ -21,6 +25,7 @@ class App extends Component {
         showModal: false, // Whether to show the modal
         showWarning: false, // Whether to show the warning
         isLoggedIn: false,
+        signupModalIsOpen: false,
     };
 
     handleLogin = () => {
@@ -98,57 +103,57 @@ class App extends Component {
             })
             .catch(error => console.error('Error:', error));
     };
-    
+
     // Function to clear the cart
     clearCartAPICall = (cartId, isClearAll) => {
         // Get the user ID from local storage
         const userId = localStorage.getItem('userId');
-    
+
         // Determine the API endpoint based on isClearAll
         const endpoint = isClearAll ? `http://localhost:5000/carts?user_id=${userId}` : `http://localhost:5000/carts?cart_id=${cartId}`;
-    
+
         fetch(endpoint, {
             method: 'DELETE',
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Delete API Response:', data);
-    
-            // Update the state only when the API request is successful
-            if (isClearAll) {
-                this.setState({ cart: [], total: 0 }, () => {
-                    // Clear the cart from local storage
-                    localStorage.removeItem('cart');
-    
-                    // Show a success message
-                    alert('All items cleared from cart successfully!');
-                });
-            } else {
-                this.setState(prevState => {
-                    const updatedCart = prevState.cart.filter(item => item.cart_id !== cartId);
-                    const total = this.calculateTotal(updatedCart);
-    
-                    // Update the cart in local storage
-                    localStorage.setItem('cart', JSON.stringify(updatedCart));
-    
-                    // Show a success message
-                    alert('Item removed from cart successfully!');
-    
-                    return { cart: updatedCart, total };
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-    
-            // Show a popup message when the API request fails
-            alert('Failed to clear the cart. Please try again.');
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Delete API Response:', data);
+
+                // Update the state only when the API request is successful
+                if (isClearAll) {
+                    this.setState({ cart: [], total: 0 }, () => {
+                        // Clear the cart from local storage
+                        localStorage.removeItem('cart');
+
+                        // Show a success message
+                        alert('All items cleared from cart successfully!');
+                    });
+                } else {
+                    this.setState(prevState => {
+                        const updatedCart = prevState.cart.filter(item => item.cart_id !== cartId);
+                        const total = this.calculateTotal(updatedCart);
+
+                        // Update the cart in local storage
+                        localStorage.setItem('cart', JSON.stringify(updatedCart));
+
+                        // Show a success message
+                        alert('Item removed from cart successfully!');
+
+                        return { cart: updatedCart, total };
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+
+                // Show a popup message when the API request fails
+                alert('Failed to clear the cart. Please try again.');
+            });
     };
 
     // Function to remove a product from the cart
@@ -218,6 +223,14 @@ class App extends Component {
         localStorage.removeItem('cart');
     };
 
+    openSignupModal = () => {
+        this.setState({ signupModalIsOpen: true });
+    }
+
+    closeSignupModal = () => {
+        this.setState({ signupModalIsOpen: false });
+    }
+
     render() {
         const { cart, showModal, showWarning } = this.state;
 
@@ -240,7 +253,34 @@ class App extends Component {
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/logout" element={<Logout clearCartLocallyOnLogout={this.clearCartLocallyOnLogout} />} />
                                 <Route path="/account" element={<AccountPage />} />
+                                <Route path="/product/:id" element={<ProductDetail />} />
                             </Routes>
+                            <button onClick={this.openSignupModal}>Sign Up for Gift Card</button>
+
+                            <Modal
+                                isOpen={this.state.signupModalIsOpen}
+                                onRequestClose={this.closeSignupModal}
+                                contentLabel="Signup for Gift Card Modal"
+                                overlayClassName="modal-animation-overlay"
+                                className="modal-animation-content scrollable-container"
+                            >
+                                <button
+                                    onClick={this.closeSignupModal}
+                                    className="close-button"
+                                    img="/images/close.jpg"
+                                />
+                                <h2>Sign Up for a Gift Card!</h2>
+                                <p>Enter your details below to sign up for a chance to win a gift card.</p>
+                                <form>
+                                    <label>
+                                        Email address
+                                        <input type="email" required />
+                                    </label>
+                                    <button type="submit">Sign Up</button>
+                                </form>
+                                <img src="/images/gift.gif" style={{ width: '180px', height: '180px', objectFit: 'cover' }} alt="Loading..." /> {/* Add your GIF here */}
+                            </Modal>
+
                             <Footer />
 
                             {showWarning && (

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
+import { Link } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../App.css';
@@ -34,7 +35,7 @@ class Product extends Component {
         const { size } = this.state;
 
         let quantity = parseInt(this.state.quantity);
-        quantity = Math.max(1, Math.min(99, quantity)); 
+        quantity = Math.max(1, Math.min(99, quantity));
 
         if (quantity === 0) {
             this.setState({ warning: 'Please select a quantity.' });
@@ -46,9 +47,9 @@ class Product extends Component {
             return;
         }
 
-        const productToAdd = { 
-            ...product, 
-            quantity, 
+        const productToAdd = {
+            ...product,
+            quantity,
             size,
             user_id: localStorage.getItem('userId'), // Replace with the actual user ID
             product_id: product.product_id // Replace with the actual product ID
@@ -56,7 +57,7 @@ class Product extends Component {
         console.log('Adding product to cart:', productToAdd);
         addToCart(productToAdd);
         console.log(productToAdd.quantity, productToAdd.size, productToAdd.name, productToAdd.price);
-    
+
         // Clear the warning
         this.setState({ warning: '' });
     };
@@ -77,10 +78,11 @@ class Product extends Component {
         };
 
         return (
+
             <div className="product">
                 <div className="product-images">
                     <Slider {...settings}>
-                        {image_url && image_url.map((image, index) => { // Corrected here
+                        {image_url && image_url.map((image, index) => {
                             console.log('Image prop:', image);
                             console.log('With PUBLIC_URL:', process.env.PUBLIC_URL + image);
 
@@ -90,7 +92,15 @@ class Product extends Component {
                                         className="product-image"
                                         src={process.env.PUBLIC_URL + image}
                                         alt={title}
-                                        style={{ width: '300px', height: '250px', objectFit: 'cover' }}
+                                        style={{
+                                            width: '300px',
+                                            height: '250px',
+                                            objectFit: 'cover',
+                                            transition: 'transform 0.2s',
+                                            ':hover': {
+                                                transform: 'scale(1.2)'
+                                            }
+                                        }}
                                     />
                                 </div>
                             );
@@ -99,9 +109,11 @@ class Product extends Component {
                 </div>
                 <div className="product-details">
                     <br />
-                    <h3>{title}</h3>
-                    <p>{description}</p>
-                    <p>Price: ${price}</p>
+                    <Link to={`/product/${product.product_id}`}>
+                        <h3>{title}</h3>
+                        <p>{description}</p>
+                        <p>Price: ${price}</p>
+                    </Link>
                     <div className="quantity-selector">
                         <label htmlFor="quantity">Quantity:&nbsp;</label>
                         <button className="quantity-button" onClick={() => this.handleQuantityChange(-1)}>-</button>
@@ -127,6 +139,7 @@ class Product extends Component {
                     <button onClick={this.handleAddToCart}>Add to Cart</button>
                 </div>
             </div>
+
         );
     }
 }

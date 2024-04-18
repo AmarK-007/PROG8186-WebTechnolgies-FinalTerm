@@ -293,6 +293,9 @@ h5 {
 /* Height of the footer */
 /* } */
 
+body {
+  overflow-x: hidden;
+}
 .main-content {
   flex-grow: 1;
 }
@@ -881,4 +884,54 @@ body::before {
 
 .webpage-content {
   font-family: 'Roboto', sans-serif;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.info-row > div {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.icon {
+  padding: 5px;
+}
+
+
+.close-button {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.close-button::before,
+.close-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60%;
+    height: 2px;
+    background-color: #000;
+}
+
+.close-button::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.close-button::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
 }

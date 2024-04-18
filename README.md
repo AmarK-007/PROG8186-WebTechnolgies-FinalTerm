@@ -96,7 +96,7 @@ To set up this project locally, follow these steps:
 
 After starting the application:
 
-- Open your web browser and navigate to `http://localhost:5000`
+- Open your web browser and navigate to `http://localhost:3000`
 - Explore different functionalities such as adding to your cart, placing orders, and managing user accounts.
 
 ## Contributing

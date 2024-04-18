@@ -144,7 +144,7 @@ class CartPage extends React.Component {
                             <div class="fancy-line"></div>
                             <br />
                             <div>
-                                <PaymentForm setOrderData={this.setOrderData} handlePlaceOrder={this.handlePlaceOrder} />
+                                <PaymentForm setOrderData={this.setOrderData} handlePlaceOrder={this.handlePlaceOrder} onPaymentMethodChange={this.handlePaymentMethodChange} />
                                 <br />
                             </div>
 

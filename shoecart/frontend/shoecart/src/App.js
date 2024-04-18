@@ -14,7 +14,8 @@ import AuthContext from './components/AuthContext';
 import ProductDetail from './components/ProductDetail'; // Import the ProductDetail component
 import Modal from 'react-modal';
 import Lottie from 'react-lottie';
-import animationData from './animations/shoecart_orderplaced.json';
+import animationDataOrder from './animations/shoecart_orderplaced.json';
+import animationDataCart from './animations/shoecart_addtocart.json';
 
 Modal.setAppElement('#root');
 
@@ -29,6 +30,8 @@ class App extends Component {
         isLoggedIn: false,
         signupModalIsOpen: false,
         orderData: null,
+        paymentMethod: 'card',
+        isModalOpen: false, // Initialize modal state
     };
 
     handleLogin = () => {
@@ -74,11 +77,11 @@ class App extends Component {
         this.setState({ isLoggedIn });
     }
 
-    // Function to add a product to the cart
+   /*  // Function to add a product to the cart
     addToCart = (product) => {
         console.log('Sending product to server:', product);
 
-        fetch('/api/cart', {
+        fetch('http://localhost:5000/carts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(product),
@@ -105,6 +108,49 @@ class App extends Component {
                 });
             })
             .catch(error => console.error('Error:', error));
+    }; */
+
+     // Function to add a product to the cart
+     addToCart = (product) => {
+        const userId = Number(localStorage.getItem('userId')); // Fetch the user_id from the local storage
+        console.log('userId:', userId); // Log the userId
+        // Make a POST request to the cart API
+        fetch('http://localhost:5000/carts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_id: userId, // Use the fetched user_id
+                product_id: product.product_id,
+                quantity: product.quantity,
+                size: product.size
+            }),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Cart API Response:', data);
+
+                // Update the state only when the API request is successful
+                const updatedProduct = { ...product, price: product.price, quantity: product.quantity };
+                const updatedCart = [...this.state.cart, updatedProduct];
+                const total = this.calculateTotal(updatedCart);
+                this.setState({ cart: updatedCart, total });
+                console.log("Updated Cart:", updatedCart);
+                console.log("Total:", total);
+                this.handleAddToCart();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+
+                // Show a popup message when the API request fails
+                alert('Failed to add the product to the cart. Please try again.');
+            });
     };
 
     // Function to clear the cart
@@ -146,9 +192,9 @@ class App extends Component {
                 this.setState(newState, () => {
                     // Show a success message
                     if (isClearAll) {
-                        alert('All items cleared from cart successfully!');
+                        console.log("All items cleared from cart successfully!");
                     } else {
-                        alert('Item removed from cart successfully!');
+                        console.log("Item removed from cart successfully!");
                     }
                 });
 
@@ -174,6 +220,9 @@ class App extends Component {
         });
     };
 
+    handlePaymentMethodChange = (paymentMethod) => {
+        this.setState({ paymentMethod });
+    }
     // Function to handle buy now action
     handleBuyNow = async () => {
         const { cart, total, paymentMethod } = this.state;
@@ -251,6 +300,19 @@ class App extends Component {
     handleCloseWarning = () => {
         this.setState({ showWarning: false });
     };
+    handleAddToCart = () => {
+        this.setState({ isModalOpen: true });
+    };
+
+    handleFeedbackChange = (pos) => {
+        this.setState({ feedback: pos.x });
+    };
+
+    closeModal = () => {
+        this.setState({ isModalOpen: false });
+        this.fetchCart(); //fetches the cart
+        //window.location.reload(); //reloads the page
+    };
 
     // Function to calculate the total bill
     calculateTotal = (cart) => {
@@ -279,10 +341,19 @@ class App extends Component {
     render() {
         const { cart, showModal, showWarning } = this.state;
 
-        const defaultOptions = {
+        const defaultOptionsOrder = {
             loop: true,
             autoplay: true,
-            animationData: animationData,
+            animationData: animationDataOrder, // use different animation data
+            rendererSettings: {
+                preserveAspectRatio: 'xMidYMid slice'
+            }
+        };
+        
+        const defaultOptionsCart = {
+            loop: true,
+            autoplay: true,
+            animationData: animationDataCart, // use different animation data
             rendererSettings: {
                 preserveAspectRatio: 'xMidYMid slice'
             }
@@ -302,12 +373,14 @@ class App extends Component {
                             <Header products={this.state.products} cart={cart} />
                             <Routes>
                                 <Route path="/" element={<HomePage addToCart={this.addToCart} updateProducts={this.updateProducts} cart={this.state.cart} total={this.state.total} fetchCart={this.fetchCart} />} />
-                                <Route path="/cart" element={<CartPage cart={this.state.cart} total={this.state.total} products={this.state.products} removeFromCart={this.removeFromCart} handleBuyNow={this.handleBuyNow} orderData={this.state.orderData} clearCartAPICall={this.clearCartAPICall} />} />
+                                <Route path="/cart" element={<CartPage cart={this.state.cart} total={this.state.total} products={this.state.products}
+                                    removeFromCart={this.removeFromCart} handleBuyNow={this.handleBuyNow} orderData={this.state.orderData} clearCartAPICall={this.clearCartAPICall}
+                                    onPaymentMethodChange={this.handlePaymentMethodChange} />} />
                                 <Route path="/myorders" element={<MyOrders products={this.state.products} />} />
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/logout" element={<Logout clearCartLocallyOnLogout={this.clearCartLocallyOnLogout} />} />
                                 <Route path="/account" element={<AccountPage />} />
-                                <Route path="/product/:id" element={<ProductDetail />} />
+                                <Route path="/product/:id" element={<ProductDetail addToCart={this.addToCart}/>} />
                             </Routes>
                             <button onClick={this.openSignupModal}>Sign Up for Gift Card</button>
 
@@ -335,6 +408,23 @@ class App extends Component {
                                 <img src="/images/gift.gif" style={{ width: '180px', height: '180px', objectFit: 'cover' }} alt="Loading..." /> {/* Add your GIF here */}
                             </Modal>
 
+                            <Modal
+                            isOpen={this.state.isModalOpen}
+                            onRequestClose={this.closeModal}
+                            overlayClassName="modal-animation-overlay"
+                            className="modal-animation-content scrollable-container"
+                        >
+                            <button
+                                    onClick={this.closeModal}
+                                    className="close-button"
+                                    img="/images/close.jpg"
+                                />
+                            <h2>Item Added to Cart</h2>
+                            <div className="lottie-container">
+                                <Lottie options={defaultOptionsCart} height={'100%'} width={'100%'} />
+                            </div>
+                            {/* <button onClick={this.closeModal}>Close</button> */}
+                        </Modal>
                             <Footer />
 
                             {showWarning && (
@@ -348,26 +438,25 @@ class App extends Component {
                             )}
 
 
-                            <BootstrapModal show={this.state.showModal} onHide={this.handleCloseModal}>
-                                <BootstrapModal.Header closeButton>
-                                    <BootstrapModal.Title><h2>Order Placed Successfully!</h2></BootstrapModal.Title>
-                                </BootstrapModal.Header>
-                                <BootstrapModal.Body>
-                                    <div className="lottie-container">
-                                        <Lottie options={defaultOptions} height={'100%'} width={'100%'} />
-                                    </div>
-                                    <br />
+                            <Modal
+                                isOpen={this.state.showModal}
+                                onRequestClose={this.handleCloseModal}
+                                overlayClassName="modal-animation-overlay"
+                                className="modal-animation-content scrollable-container"
+                            >
+                                <button onClick={this.handleCloseModal} className="close-button">
+                                    <img src="/images/close.jpg" alt="Close" />
+                                </button>
+                                <h2>Order Placed Successfully!</h2>
+                                <div className="lottie-container">
+                                    <Lottie options={defaultOptionsOrder} height={'100%'} width={'100%'} />
+                                </div>
+                                <p>
                                     Thank you for your {this.state.orderData ? this.state.orderData.payment_method : ''} purchase! Your order has been successfully placed.
                                     We will send you a confirmation email shortly with details about your order.
-                                    <br />
-                                    <br />
-                                </BootstrapModal.Body>
-                                <BootstrapModal.Footer>
-                                    <Button variant="secondary" onClick={this.handleCloseModal}>
-                                        Continue Shopping
-                                    </Button>
-                                </BootstrapModal.Footer>
-                            </BootstrapModal>
+                                </p>
+                                <button onClick={this.handleCloseModal}>Continue Shopping</button>
+                            </Modal>
 
                         </div>
                     </Router>

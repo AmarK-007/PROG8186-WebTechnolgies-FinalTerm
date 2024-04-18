@@ -1,9 +1,6 @@
 import React from 'react';
 import Product from './Product';
-import Modal from 'react-modal';
-import Lottie from 'react-lottie';
 import Slider from 'react-input-slider';
-import animationData from '../animations/shoecart_addtocart.json';
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin, FaArrowUp, FaGooglePay, FaCcVisa, FaCcMastercard, FaMoneyBillWave } from 'react-icons/fa'; // Import Font Awesome icons
 import '../App.css';
 
@@ -18,26 +15,14 @@ class HomePage extends React.Component {
             cart: [], // Initialize cart state
             total: 0, // Initialize total state
             products: [], // Initialize products state
-            isModalOpen: false, // Initialize modal state
+           
 
             serverError: false, // Initialize serverError state
             feedback: 0,
         };
     }
 
-    handleAddToCart = () => {
-        this.setState({ isModalOpen: true });
-    };
-
-    handleFeedbackChange = (pos) => {
-        this.setState({ feedback: pos.x });
-    };
-
-    closeModal = () => {
-        this.setState({ isModalOpen: false });
-        this.props.fetchCart(); //fetches the cart
-        //window.location.reload(); //reloads the page
-    };
+   
     componentDidMount() {
         fetch('http://localhost:5000/products')
             .then(response => response.json())
@@ -60,48 +45,6 @@ class HomePage extends React.Component {
         }
     }
 
-    // Function to add a product to the cart
-    addToCart = (product) => {
-        const userId = Number(localStorage.getItem('userId')); // Fetch the user_id from the local storage
-        console.log('userId:', userId); // Log the userId
-        // Make a POST request to the cart API
-        fetch('http://localhost:5000/carts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                user_id: userId, // Use the fetched user_id
-                product_id: product.product_id,
-                quantity: product.quantity,
-                size: product.size
-            }),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Cart API Response:', data);
-
-                // Update the state only when the API request is successful
-                const updatedProduct = { ...product, price: product.price, quantity: product.quantity };
-                const updatedCart = [...this.state.cart, updatedProduct];
-                const total = this.calculateTotal(updatedCart);
-                this.setState({ cart: updatedCart, total });
-                console.log("Updated Cart:", updatedCart);
-                console.log("Total:", total);
-                this.handleAddToCart();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-
-                // Show a popup message when the API request fails
-                alert('Failed to add the product to the cart. Please try again.');
-            });
-    };
 
     // Function to remove a product from the cart
     removeFromCart = (index) => {
@@ -124,14 +67,6 @@ class HomePage extends React.Component {
 
     render() {
         const { products, serverError } = this.state; // Use products from state
-        const defaultOptions = {
-            loop: true,
-            autoplay: true,
-            animationData: animationData,
-            rendererSettings: {
-                preserveAspectRatio: 'xMidYMid slice'
-            }
-        };
         return (
             <div className="App">
                 {serverError ? (
@@ -145,27 +80,11 @@ class HomePage extends React.Component {
                         <h2>Best Sellers</h2>
                         <div className="products-container  flex-container">{/* scrollable-container */}
                             {products.map((product, index) => (
-                                <Product key={index} product={product} addToCart={this.addToCart} />
+                                <Product key={index} product={product} addToCart={this.props.addToCart} />
                             ))}
                         </div>
 
-                        <Modal
-                            isOpen={this.state.isModalOpen}
-                            onRequestClose={this.closeModal}
-                            overlayClassName="modal-animation-overlay"
-                            className="modal-animation-content scrollable-container"
-                        >
-                            <button
-                                    onClick={this.closeModal}
-                                    className="close-button"
-                                    img="/images/close.jpg"
-                                />
-                            <h2>Add to Cart</h2>
-                            <div className="lottie-container">
-                                <Lottie options={defaultOptions} height={'100%'} width={'100%'} />
-                            </div>
-                            {/* <button onClick={this.closeModal}>Close</button> */}
-                        </Modal>
+                        
                         <br />
                         <br />
                         <div style={{ width: '100%', backgroundColor: '#666363' }}>

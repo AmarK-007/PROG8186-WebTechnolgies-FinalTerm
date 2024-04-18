@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Product from './Product';
 
-function ProductDetail() {
+function ProductDetail(props) {
     const [product, setProduct] = useState(null);
     const [comments, setComments] = useState([]);
     const { id: productId } = useParams();
@@ -34,7 +34,7 @@ function ProductDetail() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
                 {product.map(item => (
                     <div style={{ border: '1px solid #ccc',  padding: '1rem', margin: '1rem' }} key={item.id}>
-                        <Product product={item} />
+                        <Product product={item} addToCart={props.addToCart} />
                     </div>
                 ))}
             </div>

@@ -13,6 +13,7 @@ class PaymentForm extends React.Component {
 
     handlePaymentMethodChange = (event) => {
         this.setState({ paymentMethod: event.target.value });
+        this.props.onPaymentMethodChange(event);
     }
 
     handleInputChange = (event) => {
@@ -72,10 +73,10 @@ class PaymentForm extends React.Component {
             const isValidCardHolderName = this.validateCardHolderName(this.state.cardHolderName);
 
             if (isValidCardNumber && isValidCardExpiry && isValidCardCVV && isValidCardHolderName) {
-                this.props.handlePlaceOrder();
+                this.props.handlePlaceOrder('Credit/Debit Card');
             }
         } else {
-            this.props.handlePlaceOrder();
+            this.props.handlePlaceOrder('Cash on Delivery');
         }
     }
 

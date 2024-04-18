@@ -34,7 +34,9 @@ To set up this project locally, follow these steps:
    cd PROG8186-WebTechnolgies-FinalTerm
    ```
 3. Install NPM packages:
-
+   ```sh
+   cd shoecart\frontend\shoecart\
+   ```
    ### For Your Frontend Development:
    - **React and React-DOM**:
      ```bash
@@ -68,8 +70,15 @@ To set up this project locally, follow these steps:
      ```bash
      npm install react-lottie
      ```
-
-   ### For Your Backend Development:
+   - Start the Frontend (by default it runs on `http://localhost:3000/`):
+      ```bash
+      cd shoecart\frontend\shoecart\
+      npm start
+      ```
+4. ### For Your Backend Development:
+   ```sh
+   cd shoecart\backend\
+   ```
    - **Express**:
      ```bash
      npm install express
@@ -87,14 +96,11 @@ To set up this project locally, follow these steps:
      npm install cors
      ```
 
-4. Start the server (by default it runs on `http://localhost:5000/`):
-   ```bash
-   node server.js
-   ```
-5. Start the Frontend (by default it runs on `http://localhost:3000/`):
-   ```bash
-   npm start
-   ```
+   - Start the server (by default it runs on `http://localhost:5000/`):
+      ```bash
+      node server.js
+      ```
+
 ## Usage
 
 After starting the application:
@@ -102,14 +108,23 @@ After starting the application:
 - Open your web browser and navigate to `http://localhost:3000`
 - Explore different functionalities such as adding to your cart, placing orders, and managing user accounts.
 
+## Topics covered as per Scheme for E-commerce Website Project final exam:
+1. Project Setup and Code Organization (10 Points) - Implemented
+2. Frontend Implementation (25 Points) - Implemented
+3. Backend Implementation (20 Points) - Implemented
+4. Database Design (15 Points) - Implemented
+5. Functionality (10 Points) - Implemented
+6. Presentation (20 Points) - Completed
+Bonus Points (up to 10 Points) - Implemented
+
 ## Contributing
 
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
+2. Create your Feature Branch (`git checkout -b feature/shoecart`)
+3. Commit your Changes (`git commit -m 'Add some shoecartFeatures'`)
+4. Push to the Branch (`git push origin feature/shoecartFeatures`)
 5. Open a Pull Request
 
 ## License
@@ -118,7 +133,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Your Name - [Amarnath Kathiresan]
+Name - [Amarnath Kathiresan]
+Email - [k.amarnath7@gmail.com]
 
 Project Link: [https://github.com/AmarK-007/PROG8186-WebTechnolgies-FinalTerm](https://github.com/AmarK-007/PROG8186-WebTechnolgies-FinalTerm)
 
@@ -127,6 +143,7 @@ Project Link: [https://github.com/AmarK-007/PROG8186-WebTechnolgies-FinalTerm](h
 - [Font Awesome](https://fontawesome.com)
 - [React Bootstrap](https://react-bootstrap.github.io/)
 - [Mongoose](https://mongoosejs.com/)
+- Lottie animations(https://lottiefiles.com/)
 - All other libraries and frameworks used in this project.
 ```
 

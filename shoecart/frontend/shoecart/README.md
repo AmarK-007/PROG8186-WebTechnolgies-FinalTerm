@@ -1,70 +1,131 @@
-# Getting Started with Create React App
+# Shoecart
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the repository for Shoecart, a comprehensive web application focused on providing a seamless online shopping experience for shoe enthusiasts. Designed with a responsive UI and built using the latest web technologies, Shoecart offers features like product browsing, cart management, order placement, and user authentication.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Browse a wide range of shoes.
+- Add items to the cart and manage your shopping cart.
+- Place orders with ease.
+- Authentication and account management.
+- Responsive design for all devices.
+- Integration of payment icons for visual appeal and user guidance.
 
-### `npm start`
+## Technologies Used
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Frontend:** React.js, React Router, React Bootstrap, React Modal, Slick Carousel, React Icons
+- **Backend:** Node.js, Express, MongoDB (via Mongoose), Express Sessions
+- **Styling:** Bootstrap, Slick-Carousel CSS
+- **Animations:** React Lottie
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Installation
 
-### `npm test`
+Before installing, ensure you have Node.js and npm installed in your system.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To set up this project locally, follow these steps:
 
-### `npm run build`
+1. Clone the repo:
+   ```sh
+   git clone https://github.com/AmarK-007/PROG8186-WebTechnolgies-FinalTerm.git
+   ```
+2. Navigate to the project directory:
+   ```sh
+   cd PROG8186-WebTechnolgies-FinalTerm
+   ```
+3. Install NPM packages:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ### For Your Frontend Development:
+   - **React and React-DOM**:
+     ```bash
+     npm install react react-dom
+     ```
+   - **React Router DOM**:
+     ```bash
+     npm install react-router-dom
+     ```
+   - **React Bootstrap and Bootstrap**:
+     ```bash
+     npm install react-bootstrap bootstrap
+     ```
+   - **React Modal**:
+     ```bash
+     npm install react-modal
+     ```
+   - **React Icons**:
+     ```bash
+     npm install react-icons
+     ```
+   - **React Input Slider**:
+     ```bash
+     npm install react-input-slider
+     ```
+   - **React Slick and Slick-Carousel**:
+     ```bash
+     npm install react-slick slick-carousel
+     ```
+   - **React Lottie**:
+     ```bash
+     npm install react-lottie
+     ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   ### For Your Backend Development:
+   - **Express**:
+     ```bash
+     npm install express
+     ```
+   - **Express-Session**:
+     ```bash
+     npm install express-session
+     ```
+   - **Mongoose**:
+     ```bash
+     npm install mongoose
+     ```
+   - **Cors**:
+     ```bash
+     npm install cors
+     ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+4. Start the server (by default it runs on `http://localhost:5000/`):
+   ```bash
+   npm start
+   ```
 
-### `npm run eject`
+## Usage
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+After starting the application:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Open your web browser and navigate to `http://localhost:5000`
+- Explore different functionalities such as adding to your cart, placing orders, and managing user accounts.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Contributing
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-## Learn More
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## License
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Distributed under the MIT License. See `LICENSE` for more information.
 
-### Code Splitting
+## Contact
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Your Name - [Your Contact Information]
 
-### Analyzing the Bundle Size
+Project Link: [https://github.com/AmarK-007/PROG8186-WebTechnolgies-FinalTerm](https://github.com/AmarK-007/PROG8186-WebTechnolgies-FinalTerm)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Acknowledgements
 
-### Making a Progressive Web App
+- [Font Awesome](https://fontawesome.com)
+- [React Bootstrap](https://react-bootstrap.github.io/)
+- [Mongoose](https://mongoosejs.com/)
+- All other libraries and frameworks used in this project.
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Additional Suggestions
+- You might want to add error handling or deployment instructions as needed based on how you will be using or expanding this project.
+- Add any additional scripts or environment variables that are necessary to properly run the project in other sections of the README.

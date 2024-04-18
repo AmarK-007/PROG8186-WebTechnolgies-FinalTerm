@@ -12,7 +12,9 @@ class Product extends Component {
         this.state = {
             quantity: 0,
             size: '0',
-            warning: ''
+            warning: '',
+            isHovered: false,
+            hoveredImage: null
         };
     }
 
@@ -62,10 +64,17 @@ class Product extends Component {
         this.setState({ warning: '' });
     };
 
+    handleMouseEnter = (image) => {
+        this.setState({ isHovered: true, hoveredImage: image });
+    };
+
+    handleMouseLeave = () => {
+        this.setState({ isHovered: false, hoveredImage: null });
+    };
     render() {
         const { product } = this.props;
         const { title, description, price, image_url, sizes } = product;
-        const { quantity, size } = this.state;
+        const { quantity, size, isHovered, hoveredImage } = this.state;
 
         const settings = {
             dots: true,
@@ -92,15 +101,8 @@ class Product extends Component {
                                         className="product-image"
                                         src={process.env.PUBLIC_URL + image}
                                         alt={title}
-                                        style={{
-                                            width: '300px',
-                                            height: '250px',
-                                            objectFit: 'cover',
-                                            transition: 'transform 0.2s',
-                                            ':hover': {
-                                                transform: 'scale(1.2)'
-                                            }
-                                        }}
+                                        style={{ width: '300px', height: '250px', objectFit: 'cover' }}
+                                        onMouseEnter={() => this.handleMouseEnter(image)}
                                     />
                                 </div>
                             );
@@ -138,11 +140,33 @@ class Product extends Component {
                     )}
                     <button onClick={this.handleAddToCart}>Add to Cart</button>
                 </div>
+                {isHovered && (
+                    <div
+                        style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            zIndex: 1000,
+                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}
+                    >
+                        <div onMouseLeave={this.handleMouseLeave}>
+                            <img
+                                src={process.env.PUBLIC_URL + hoveredImage}
+                                alt={title}
+                                style={{ width: '75vw', height: '75vh', objectFit: 'cover', border: '2px solid white' }}
+                            />
+                        </div>
+                    </div>
+                )}
             </div>
-
         );
     }
 }
-
 export default Product;
 

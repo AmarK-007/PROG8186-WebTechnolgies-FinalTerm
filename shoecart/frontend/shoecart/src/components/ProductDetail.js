@@ -100,7 +100,7 @@ function ProductDetail(props) {
                     return unique;
                 }, []).map(comment => (
                     <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '1rem', margin: '1rem', minWidth: '250px', backgroundColor: 'rgba(0, 0, 0, 0.3)' }} key={comment.id}>
-                        <img src={comment.image_url} alt="User" style={{ width: '250px', height: 'auto' }} ref={imageRef} src={product.image_url} alt="Product" />
+                        <img src={comment.image_url} alt="Product" style={{ width: '250px', height: 'auto' }} ref={imageRef}  />
                         <p ref={idRef}>{product.id}</p>
                         <div style={{ display: 'flex', overflowX: 'auto', gap: '1rem' }}>
                             {comments.filter(c => c.image_url === comment.image_url).map((c, index) => (

@@ -65,6 +65,10 @@ class HomePage extends React.Component {
         }, 0);
     };
 
+    // Function to handle feedback change
+    handleFeedbackChange = ({ x }) => {
+        this.setState({ feedback: x });
+    };
     render() {
         const { products, serverError } = this.state; // Use products from state
         return (

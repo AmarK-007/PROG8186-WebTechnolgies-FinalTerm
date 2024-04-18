@@ -293,13 +293,15 @@ h5 {
 /* Height of the footer */
 /* } */
 
+.main-content {
+  flex-grow: 1;
+}
 /* CSS for footer */
 footer {
   text-align: center;
   padding: 20px;
   margin-top: 20px;
   background-color: #666363;
-  position: fixed;
   bottom: 0;
   color: white;
   width: 100%;

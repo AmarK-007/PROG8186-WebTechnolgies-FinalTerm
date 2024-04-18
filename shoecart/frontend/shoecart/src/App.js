@@ -236,7 +236,7 @@ class App extends Component {
                             <Routes>
                                 <Route path="/" element={<HomePage addToCart={this.addToCart} updateProducts={this.updateProducts} cart={this.state.cart} total={this.state.total} fetchCart={this.fetchCart} />} />
                                 <Route path="/cart" element={<CartPage cart={this.state.cart} total={this.state.total} products={this.state.products} removeFromCart={this.removeFromCart} handleBuyNow={this.handleBuyNow} />} />
-                                <Route path="/myorders" element={<MyOrders />} />
+                                <Route path="/myorders" element={<MyOrders products={this.state.products} />} />
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/logout" element={<Logout clearCartLocallyOnLogout={this.clearCartLocallyOnLogout} />} />
                                 <Route path="/account" element={<AccountPage />} />

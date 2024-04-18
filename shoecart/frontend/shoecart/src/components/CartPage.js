@@ -75,8 +75,8 @@ class CartPage extends React.Component {
         const quantity = this.calculateQuantity(cart);
 
         return (
-            <div className="cart-card-layout">
-                <h1>Shopping Cart</h1>
+            <div className="cart-card-layout" style={{ backgroundColor: '#f8f9fa', padding: '20px', borderRadius: '5px', marginTop: '20px' }}>
+                <h1 style={{ color: '#6c757d', marginBottom: '10px' }}>Shopping Cart</h1>
                 <div class="fancy-line"></div>
                 <div>
                     {cart.length > 1 &&
@@ -93,26 +93,30 @@ class CartPage extends React.Component {
                     {cart.map((item, index) => {
                         const product = products.find(product => product.product_id === item.product_id);
                         return product && (
-                            <div key={index} className="cart-item">
+                            <div key={index} className="cart-item" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                                 {product.image_url && product.image_url.length > 0 &&
-                                    <img src={process.env.PUBLIC_URL + product.image_url[0]} alt={product.name} style={{ width: '50px', height: '50px', objectFit: 'cover' }} />
+                                    <img src={process.env.PUBLIC_URL + product.image_url[0]} alt={product.name} style={{ width: '180px', height: '180px', objectFit: 'cover', marginRight: '10px' }} />
                                 }
-                                <span>{product.title} - ${product.price} x {item.quantity} = ${product.price * item.quantity}</span>
-                                <button onClick={() => this.context.clearCartAPICall(item.cart_id, false)/*this.props.removeFromCart(index)*/}>Remove</button>
+                                <div style={{ flex: 1, textAlign: 'left', textJustify: 'inter-word' }}>
+                                    <p><strong>Product:</strong> <span style={{ color: '#6c757d' }}>{product.title}</span></p>
+                                    <p><strong>Price:</strong> <span style={{ color: '#28a745' }}>${product.price}</span></p>
+                                    <p><strong>Quantity:</strong> <span style={{ color: '#6c757d' }}>{item.quantity}</span></p>
+                                    <p><strong>Total:</strong> <span style={{ color: '#28a745' }}>${product.price * item.quantity}</span></p>
+                                </div>
+                                <button onClick={() => this.context.clearCartAPICall(item.cart_id, false)}>Remove</button>
                             </div>
                         );
                     })}
                 </div>
                 <div>
-                    <h2>Total Quantity: {quantity}</h2>
-                    <h2>Subtotal: ${total.toFixed(2)}</h2>
-                    <h2>Tax: ${tax.toFixed(2)}</h2>
-                    <h2>Total: ${totalWithTax.toFixed(2)}</h2>
-                    {/* </div> <button onClick={this.props.handleBuyNow}>Buy Now</button> */}
+                    <h2>Total Quantity: <span style={{ color: '#6c757d' }}>{quantity}</span></h2>
+                    <h2>Subtotal: <span style={{ color: '#28a745' }}>${total.toFixed(2)}</span></h2>
+                    <h2>Tax: <span style={{ color: '#dc3545' }}>${tax.toFixed(2)}</span></h2>
+                    <h2>Total: <span style={{ color: '#28a745' }}>${totalWithTax.toFixed(2)}</span></h2>
                     <button onClick={this.handleProceedConfirm}>Proceed/Confirm</button>
                     {this.state.showAddress && (
                         <div>
-                            <p>User Address: {this.state.userAddress}</p>
+                            <p>User Address: <span style={{ color: '#6c757d' }}>{this.state.userAddress}</span></p>
                             <button onClick={this.handleProceedPayment}>Proceed to Payment</button>
                         </div>
                     )}

@@ -43,7 +43,7 @@ class Header extends React.Component {
                                 <Link to="/">Home</Link>
                                 {context.isLoggedIn && (
                                     <>
-                                        <Link to="/myorders">MyOrders</Link>
+                                        <Link to={{ pathname: "/myorders", state: { products: this.props.products } }}>MyOrders</Link>
                                         {totalQuantity > 0 ? (
                                             <Link to="/cart">Cart ({totalQuantity})</Link>
                                         ) : (

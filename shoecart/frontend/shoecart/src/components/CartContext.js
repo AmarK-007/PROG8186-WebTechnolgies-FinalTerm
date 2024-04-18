@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 // Define your function
 const clearCartLocallyOnLogout = () => {
@@ -6,14 +6,36 @@ const clearCartLocallyOnLogout = () => {
 };
 
 
+const addProductToCart = () => {
+  // Implementation of the function
+};
+
+const removeProductFromCart = () => {
+  // Implementation of the function
+};
+
+const clearCartAPICall = () => {
+  // Implementation of the function
+};
+
 export const CartContext = React.createContext({
   clearCartLocallyOnLogout: clearCartLocallyOnLogout,
-  // Other context values...
+  cart: [],
+  addProductToCart: () => addProductToCart,
+  removeProductFromCart: removeProductFromCart,
+  clearCartAPICall: clearCartAPICall,
 });
 
-export const CartProvider = ({ children }) => {
+export const CartProvider = ({ children, clearCartAPICall }) => {
+  const [cart, setCart] = useState([]);
   return (
-    <CartContext.Provider value={{ clearCartLocallyOnLogout }}>
+    <CartContext.Provider value={{
+      clearCartLocallyOnLogout,
+      cart: cart,
+      addProductToCart: addProductToCart,
+      removeProductFromCart: removeProductFromCart,
+      clearCartAPICall: clearCartAPICall,
+    }}>
       {children}
     </CartContext.Provider>
   );

@@ -13,6 +13,8 @@ import { CartContext, CartProvider } from './components/CartContext';
 import AuthContext from './components/AuthContext';
 import ProductDetail from './components/ProductDetail'; // Import the ProductDetail component
 import Modal from 'react-modal';
+import Lottie from 'react-lottie';
+import animationData from './animations/shoecart_orderplaced.json';
 
 Modal.setAppElement('#root');
 
@@ -26,6 +28,7 @@ class App extends Component {
         showWarning: false, // Whether to show the warning
         isLoggedIn: false,
         signupModalIsOpen: false,
+        orderData: null,
     };
 
     handleLogin = () => {
@@ -124,29 +127,31 @@ class App extends Component {
             .then(data => {
                 console.log('Delete API Response:', data);
 
-                // Update the state only when the API request is successful
+                // Calculate the new state outside of setState
+                let newState = {};
                 if (isClearAll) {
-                    this.setState({ cart: [], total: 0 }, () => {
-                        // Clear the cart from local storage
-                        localStorage.removeItem('cart');
-
-                        // Show a success message
-                        alert('All items cleared from cart successfully!');
-                    });
+                    newState = { cart: [], total: 0 };
+                    // Clear the cart from local storage
+                    localStorage.removeItem('cart');
                 } else {
-                    this.setState(prevState => {
-                        const updatedCart = prevState.cart.filter(item => item.cart_id !== cartId);
-                        const total = this.calculateTotal(updatedCart);
+                    const updatedCart = this.state.cart.filter(item => item.cart_id !== cartId);
+                    const total = this.calculateTotal(updatedCart);
+                    newState = { cart: updatedCart, total };
 
-                        // Update the cart in local storage
-                        localStorage.setItem('cart', JSON.stringify(updatedCart));
-
-                        // Show a success message
-                        alert('Item removed from cart successfully!');
-
-                        return { cart: updatedCart, total };
-                    });
+                    // Update the cart in local storage
+                    localStorage.setItem('cart', JSON.stringify(updatedCart));
                 }
+                // Update the state 
+
+                this.setState(newState, () => {
+                    // Show a success message
+                    if (isClearAll) {
+                        alert('All items cleared from cart successfully!');
+                    } else {
+                        alert('Item removed from cart successfully!');
+                    }
+                });
+
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -170,8 +175,8 @@ class App extends Component {
     };
 
     // Function to handle buy now action
-    handleBuyNow = () => {
-        const { cart } = this.state;
+    handleBuyNow = async () => {
+        const { cart, total, paymentMethod } = this.state;
         // Check if the cart is empty
         if (cart.length === 0) {
             // Show the warning
@@ -180,20 +185,60 @@ class App extends Component {
             // Check if the user is logged in
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             if (isLoggedIn) {
-                // Show the modal
-                this.setState({ showModal: true });
-                // Clear the cart
-                this.setState({ cart: [], total: 0 });
+                // Prepare the order details
+                const orderDetails = cart.map(item => ({
+                    product_id: item.id,
+                    quantity: item.quantity,
+                    product_size: item.size,
+                }));
 
-                // Clear the cart from local storage
-                localStorage.removeItem('cart');
+                // Prepare the order data
+                const orderData = {
+                    user_id: 1, // Replace with the actual user ID
+                    total_amount: total,
+                    order_date: new Date().toISOString().split('T')[0],
+                    payment_method: paymentMethod,
+                    delivery_status: 'Order Placed. Pending Delivery',
+                    return_status: 'No Return',
+                    orderdetails: orderDetails,
+                };
 
+                // Make a POST request to the orders API
+                const response = await fetch('http://localhost:5000/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData),
+                });
+
+                if (response.ok) {
+                    // Show the modal
+                    this.setState({ showModal: true, orderData });
+                    // Clear the cart
+                    this.setState({ cart: [], total: 0 });
+
+                    // Clear the cart from local storage
+                    localStorage.removeItem('cart');
+                    try {
+                        await this.clearCartAPICall(null, true);
+                    } catch (error) {
+                        console.error('Error clearing server cart:', error);
+                    }
+                    // Show a popup with a valid message
+                    console.log("Your order has been placed successfully!");
+                } else {
+                    // Show a popup with an error message
+                    alert('There was an error placing your order. Please try again.');
+                    console.log("There was an error placing your order. Please try again.");
+                }
             } else {
                 // Redirect the user to the login page
                 window.location.href = '/login';
             }
         }
     };
+
 
     // Function to close the modal
     handleCloseModal = () => {
@@ -234,6 +279,15 @@ class App extends Component {
     render() {
         const { cart, showModal, showWarning } = this.state;
 
+        const defaultOptions = {
+            loop: true,
+            autoplay: true,
+            animationData: animationData,
+            rendererSettings: {
+                preserveAspectRatio: 'xMidYMid slice'
+            }
+        };
+
         return (
             <AuthContext.Provider
                 value={{
@@ -242,13 +296,13 @@ class App extends Component {
                     onLogout: this.handleLogout,
                 }}
             >
-                <CartProvider value={{ cart: this.state.cart, clearCartAPICall: this.clearCartAPICall }}>
+                <CartProvider clearCartAPICall={this.clearCartAPICall} value={{ cart: this.state.cart }}>
                     <Router>
                         <div className="App">
                             <Header products={this.state.products} cart={cart} />
                             <Routes>
                                 <Route path="/" element={<HomePage addToCart={this.addToCart} updateProducts={this.updateProducts} cart={this.state.cart} total={this.state.total} fetchCart={this.fetchCart} />} />
-                                <Route path="/cart" element={<CartPage cart={this.state.cart} total={this.state.total} products={this.state.products} removeFromCart={this.removeFromCart} handleBuyNow={this.handleBuyNow} />} />
+                                <Route path="/cart" element={<CartPage cart={this.state.cart} total={this.state.total} products={this.state.products} removeFromCart={this.removeFromCart} handleBuyNow={this.handleBuyNow} orderData={this.state.orderData} clearCartAPICall={this.clearCartAPICall} />} />
                                 <Route path="/myorders" element={<MyOrders products={this.state.products} />} />
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/logout" element={<Logout clearCartLocallyOnLogout={this.clearCartLocallyOnLogout} />} />
@@ -293,13 +347,17 @@ class App extends Component {
                                 </p>
                             )}
 
-                            <BootstrapModal show={showModal} onHide={this.handleCloseModal}>
-                                <BootstrapModal.Header>
+
+                            <BootstrapModal show={this.state.showModal} onHide={this.handleCloseModal}>
+                                <BootstrapModal.Header closeButton>
                                     <BootstrapModal.Title><h2>Order Placed Successfully!</h2></BootstrapModal.Title>
                                 </BootstrapModal.Header>
                                 <BootstrapModal.Body>
+                                    <div className="lottie-container">
+                                        <Lottie options={defaultOptions} height={'100%'} width={'100%'} />
+                                    </div>
                                     <br />
-                                    Thank you for your Cash-on delivery mode purchase! Your order has been successfully placed.
+                                    Thank you for your {this.state.orderData ? this.state.orderData.payment_method : ''} purchase! Your order has been successfully placed.
                                     We will send you a confirmation email shortly with details about your order.
                                     <br />
                                     <br />
@@ -310,10 +368,11 @@ class App extends Component {
                                     </Button>
                                 </BootstrapModal.Footer>
                             </BootstrapModal>
+
                         </div>
                     </Router>
                 </CartProvider>
-            </AuthContext.Provider>
+            </AuthContext.Provider >
         );
     }
 }

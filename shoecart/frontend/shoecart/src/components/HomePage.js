@@ -80,7 +80,7 @@ class HomePage extends React.Component {
                         <h2>Best Sellers</h2>
                         <div className="products-container  flex-container">{/* scrollable-container */}
                             {products.map((product, index) => (
-                                <Product key={index} product={product} addToCart={this.props.addToCart} />
+                                <Product key={index} product={product} addToCart={this.props.addToCart} enableHoverEffect={false} />
                             ))}
                         </div>
 

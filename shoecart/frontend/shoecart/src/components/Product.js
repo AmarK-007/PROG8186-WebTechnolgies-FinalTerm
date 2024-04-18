@@ -18,6 +18,11 @@ class Product extends Component {
         };
     }
 
+    handleMouseEnter = (image) => {
+        if (this.props.enableHoverEffect) {
+            this.setState({ isHovered: true, hoveredImage: image });
+        }
+    };
     // Function to handle quantity change
     handleQuantityChange = (amount) => {
         this.setState(prevState => {
@@ -140,7 +145,7 @@ class Product extends Component {
                     )}
                     <button onClick={this.handleAddToCart}>Add to Cart</button>
                 </div>
-                {isHovered && (
+                {isHovered && this.props.enableHoverEffect && (
                     <div
                         style={{
                             position: 'fixed',

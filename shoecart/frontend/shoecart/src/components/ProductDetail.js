@@ -34,7 +34,7 @@ function ProductDetail(props) {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
                 {product.map(item => (
                     <div style={{ border: '1px solid #ccc',  padding: '1rem', margin: '1rem' }} key={item.id}>
-                        <Product product={item} addToCart={props.addToCart} />
+                        <Product product={item} addToCart={props.addToCart} enableHoverEffect={true} />
                     </div>
                 ))}
             </div>

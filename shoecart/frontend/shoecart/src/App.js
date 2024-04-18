@@ -77,41 +77,41 @@ class App extends Component {
         this.setState({ isLoggedIn });
     }
 
-   /*  // Function to add a product to the cart
-    addToCart = (product) => {
-        console.log('Sending product to server:', product);
-
-        fetch('http://localhost:5000/carts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(product),
-        })
-            .then(response => {
-                console.log('Response from server:', response);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(() => {
-                this.fetchCart();
-            })
-            .then(() => {
-                this.setState(prevState => {
-                    const updatedProduct = { ...product, price: product.price, quantity: product.quantity };
-                    const updatedCart = [...prevState.cart, updatedProduct];
-                    const total = this.calculateTotal(updatedCart);
-
-                    localStorage.setItem('cart', JSON.stringify(updatedCart));
-
-                    return { cart: updatedCart, total };
-                });
-            })
-            .catch(error => console.error('Error:', error));
-    }; */
-
-     // Function to add a product to the cart
+    /*  // Function to add a product to the cart
      addToCart = (product) => {
+         console.log('Sending product to server:', product);
+ 
+         fetch('http://localhost:5000/carts', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify(product),
+         })
+             .then(response => {
+                 console.log('Response from server:', response);
+                 if (!response.ok) {
+                     throw new Error('Network response was not ok');
+                 }
+                 return response.json();
+             })
+             .then(() => {
+                 this.fetchCart();
+             })
+             .then(() => {
+                 this.setState(prevState => {
+                     const updatedProduct = { ...product, price: product.price, quantity: product.quantity };
+                     const updatedCart = [...prevState.cart, updatedProduct];
+                     const total = this.calculateTotal(updatedCart);
+ 
+                     localStorage.setItem('cart', JSON.stringify(updatedCart));
+ 
+                     return { cart: updatedCart, total };
+                 });
+             })
+             .catch(error => console.error('Error:', error));
+     }; */
+
+    // Function to add a product to the cart
+    addToCart = (product) => {
         const userId = Number(localStorage.getItem('userId')); // Fetch the user_id from the local storage
         console.log('userId:', userId); // Log the userId
         // Make a POST request to the cart API
@@ -349,7 +349,7 @@ class App extends Component {
                 preserveAspectRatio: 'xMidYMid slice'
             }
         };
-        
+
         const defaultOptionsCart = {
             loop: true,
             autoplay: true,
@@ -372,18 +372,19 @@ class App extends Component {
                         <div className="App">
                             <Header products={this.state.products} cart={cart} />
                             <Routes>
-                                <Route path="/" element={<HomePage addToCart={this.addToCart} updateProducts={this.updateProducts} cart={this.state.cart} total={this.state.total} fetchCart={this.fetchCart} />} />
+                                <Route path="/" element={<HomePage addToCart={this.addToCart} updateProducts={this.updateProducts} cart={this.state.cart} total={this.state.total} fetchCart={this.fetchCart} showSignupButton={true} />} />
                                 <Route path="/cart" element={<CartPage cart={this.state.cart} total={this.state.total} products={this.state.products}
                                     removeFromCart={this.removeFromCart} handleBuyNow={this.handleBuyNow} orderData={this.state.orderData} clearCartAPICall={this.clearCartAPICall}
-                                    onPaymentMethodChange={this.handlePaymentMethodChange} />} />
-                                <Route path="/myorders" element={<MyOrders products={this.state.products} />} />
-                                <Route path="/login" element={<Login />} />
-                                <Route path="/logout" element={<Logout clearCartLocallyOnLogout={this.clearCartLocallyOnLogout} />} />
-                                <Route path="/account" element={<AccountPage />} />
-                                <Route path="/product/:id" element={<ProductDetail addToCart={this.addToCart}/>} />
+                                    onPaymentMethodChange={this.handlePaymentMethodChange} showSignupButton={false} />} />
+                                <Route path="/myorders" element={<MyOrders products={this.state.products} showSignupButton={false} />} />
+                                <Route path="/login" element={<Login />} showSignupButton={false} />
+                                <Route path="/logout" element={<Logout clearCartLocallyOnLogout={this.clearCartLocallyOnLogout} showSignupButton={false} />} />
+                                <Route path="/account" element={<AccountPage />} showSignupButton={false} />
+                                <Route path="/product/:id" element={<ProductDetail addToCart={this.addToCart} showSignupButton={false} />} />
                             </Routes>
-                            <button onClick={this.openSignupModal}>Sign Up for Gift Card</button>
-
+                            {this.props.showSignupButton && (
+                                <button onClick={this.openSignupModal}>Sign Up for Gift Card</button>
+                            )}
                             <Modal
                                 isOpen={this.state.signupModalIsOpen}
                                 onRequestClose={this.closeSignupModal}
@@ -409,22 +410,22 @@ class App extends Component {
                             </Modal>
 
                             <Modal
-                            isOpen={this.state.isModalOpen}
-                            onRequestClose={this.closeModal}
-                            overlayClassName="modal-animation-overlay"
-                            className="modal-animation-content scrollable-container"
-                        >
-                            <button
+                                isOpen={this.state.isModalOpen}
+                                onRequestClose={this.closeModal}
+                                overlayClassName="modal-animation-overlay"
+                                className="modal-animation-content scrollable-container"
+                            >
+                                <button
                                     onClick={this.closeModal}
                                     className="close-button"
                                     img="/images/close.jpg"
                                 />
-                            <h2>Item Added to Cart</h2>
-                            <div className="lottie-container">
-                                <Lottie options={defaultOptionsCart} height={'100%'} width={'100%'} />
-                            </div>
-                            {/* <button onClick={this.closeModal}>Close</button> */}
-                        </Modal>
+                                <h2>Item Added to Cart</h2>
+                                <div className="lottie-container">
+                                    <Lottie options={defaultOptionsCart} height={'100%'} width={'100%'} />
+                                </div>
+                                {/* <button onClick={this.closeModal}>Close</button> */}
+                            </Modal>
                             <Footer />
 
                             {showWarning && (

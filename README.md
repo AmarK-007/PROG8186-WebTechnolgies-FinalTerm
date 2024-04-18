@@ -19,6 +19,29 @@ Welcome to the repository for Shoecart, a comprehensive web application focused 
 - **Styling:** Bootstrap, Slick-Carousel CSS
 - **Animations:** React Lottie
 
+## API Involved
+- Users - CRUD 
+- Products - CRUD
+- Orders - CRUD
+- Carts - CRUD
+- Comments - CRUD
+- Login - R
+- Logout - R
+
+## Database and Tables Involved  
+- **Database Name:**
+  shoecart
+- **Table Names:**
+  - users
+  - products
+       - productimages
+       - productsizes
+  - orders
+       - orderdetails
+  - comments
+  - carts
+  - counters
+
 ## Installation
 
 Before installing, ensure you have Node.js and npm installed in your system.

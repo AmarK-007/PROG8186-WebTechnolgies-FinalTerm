@@ -89,9 +89,12 @@ To set up this project locally, follow these steps:
 
 4. Start the server (by default it runs on `http://localhost:5000/`):
    ```bash
+   node server.js
+   ```
+5. Start the Frontend (by default it runs on `http://localhost:3000/`):
+   ```bash
    npm start
    ```
-
 ## Usage
 
 After starting the application:
@@ -115,7 +118,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Your Name - [Your Contact Information]
+Your Name - [Amarnath Kathiresan]
 
 Project Link: [https://github.com/AmarK-007/PROG8186-WebTechnolgies-FinalTerm](https://github.com/AmarK-007/PROG8186-WebTechnolgies-FinalTerm)
 
@@ -127,6 +130,3 @@ Project Link: [https://github.com/AmarK-007/PROG8186-WebTechnolgies-FinalTerm](h
 - All other libraries and frameworks used in this project.
 ```
 
-### Additional Suggestions
-- You might want to add error handling or deployment instructions as needed based on how you will be using or expanding this project.
-- Add any additional scripts or environment variables that are necessary to properly run the project in other sections of the README.

@@ -1,6 +1,20 @@
-// CartContext.js
 import React from 'react';
 
-const CartContext = React.createContext();
+// Define your function
+const clearCartLocallyOnLogout = () => {
+  // Implementation of the function
+};
 
-export default CartContext;
+
+export const CartContext = React.createContext({
+  clearCartLocallyOnLogout: clearCartLocallyOnLogout,
+  // Other context values...
+});
+
+export const CartProvider = ({ children }) => {
+  return (
+    <CartContext.Provider value={{ clearCartLocallyOnLogout }}>
+      {children}
+    </CartContext.Provider>
+  );
+};

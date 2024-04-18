@@ -1,6 +1,6 @@
 import React from 'react';
 import UserAuthentication from './UserAuthentication';
-import CartContext from './CartContext';
+import { CartContext } from './CartContext';
 import { Link } from 'react-router-dom';
 import AuthContext from './AuthContext';
 

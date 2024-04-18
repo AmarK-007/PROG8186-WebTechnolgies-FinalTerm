@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import CartContext from './CartContext';
+import { CartContext } from './CartContext';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from './AuthContext';
 // functional component for user authentication

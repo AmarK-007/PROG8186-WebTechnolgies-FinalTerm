@@ -33,7 +33,7 @@ function ProductDetail() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
                 {product.map(item => (
-                    <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '1rem', margin: '1rem' }} key={item.id}>
+                    <div style={{ border: '1px solid #ccc',  padding: '1rem', margin: '1rem' }} key={item.id}>
                         <Product product={item} />
                     </div>
                 ))}

@@ -9,7 +9,7 @@ import MyOrders from './components/MyOrders';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import AccountPage from './components/AccountPage';
-import CartContext from './components/CartContext';
+import { CartContext, CartProvider } from './components/CartContext';
 import AuthContext from './components/AuthContext';
 import ProductDetail from './components/ProductDetail'; // Import the ProductDetail component
 import Modal from 'react-modal';
@@ -242,7 +242,7 @@ class App extends Component {
                     onLogout: this.handleLogout,
                 }}
             >
-                <CartContext.Provider value={{ cart: this.state.cart, clearCartAPICall: this.clearCartAPICall }}>
+                <CartProvider value={{ cart: this.state.cart, clearCartAPICall: this.clearCartAPICall }}>
                     <Router>
                         <div className="App">
                             <Header products={this.state.products} cart={cart} />
@@ -312,7 +312,7 @@ class App extends Component {
                             </BootstrapModal>
                         </div>
                     </Router>
-                </CartContext.Provider>
+                </CartProvider>
             </AuthContext.Provider>
         );
     }

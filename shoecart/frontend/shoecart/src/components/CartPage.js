@@ -1,5 +1,5 @@
 import React from "react";
-import CartContext from './CartContext';
+import { CartContext } from './CartContext';
 class CartPage extends React.Component {
     static contextType = CartContext;
     constructor(props) {
@@ -14,10 +14,12 @@ class CartPage extends React.Component {
         };
     }
     componentDidMount() {
-        fetch('http://localhost:5000/users?user_id=1')
+      /*   const userId = localStorage.getItem('userId');
+        fetch(`http://localhost:5000/users?user_id=${userId}`)
             .then(response => response.json())
             .then(data => this.setState({ userAddress: data[0].address }))
             .catch(error => console.error('Error:', error));
+ */
     }
     // Function to calculate the total bill
     calculateQuantity = (cart) => {
@@ -26,7 +28,7 @@ class CartPage extends React.Component {
     // Function to calculate the total bill
     calculateTotal = (cart, products) => {
         return cart.reduce((total, item) => {
-            const product = products.find(product => product.product_id === item.product_id);
+            const product = products.find(product => product && product.product_id === item.product_id);
             return total + (product ? product.price * item.quantity : 0);
         }, 0);
     };
@@ -35,8 +37,15 @@ class CartPage extends React.Component {
     calculateTax = (total) => {
         return total * 0.13; // 13% tax
     };
+
     handleProceedConfirm = () => {
-        this.setState({ showAddress: true });
+        const userId = localStorage.getItem('userId');
+        
+        fetch(`http://localhost:5000/users?id=${userId}`)
+        .then(response => response.json())
+        .then(data => this.setState({ userAddress: data[0].shipping_address }))
+        .then(() => { this.setState({ showAddress: true }); })
+        .catch(error => console.error('Error:', error));
     };
 
     handleProceedPayment = () => {
@@ -91,7 +100,7 @@ class CartPage extends React.Component {
                 <div>
                     {/* Display selected products */}
                     {cart.map((item, index) => {
-                        const product = products.find(product => product.product_id === item.product_id);
+                        const product = products.find(product => product && product.product_id === item.product_id);
                         return product && (
                             <div key={index} className="cart-item" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                                 {product.image_url && product.image_url.length > 0 &&
